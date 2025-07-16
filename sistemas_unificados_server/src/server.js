@@ -512,7 +512,7 @@ async function getPrinterErrorStatus(ip) {
               errorValue = "Sem papel";
               break;
             case 4:
-              errorValue = "Obstrução (papel atolado)";
+              errorValue = "Obstrução de papel";
               break;
             case 5:
               errorValue = "Sem toner";
