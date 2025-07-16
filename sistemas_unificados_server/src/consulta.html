@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta e Edição de Equipamentos</title>
+  <style>
+    /* Estilos gerais */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding-bottom: 100px;
+      background-color: #f5f5f5;
+    }
+
+    /* Cabeçalho */
+    header {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    header .logo-left {
+      width: 120px;
+      height: auto;
+    }
+
+    header .logo-right {
+      width: 85px;
+      height: auto;
+    }
+
+    /* Seção de filtros */
+    #filtros {
+      margin: 20px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      max-width: 1400px;
+    }
+
+    /* Elementos de formulário */
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input, select {
+      margin-top: 5px;
+      padding: 8px;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* Botões */
+    button {
+      margin-top: 5px;
+      padding: 10px;
+      background-color: #238f26;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+      height: 40px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .btn-cadastrar {
+      background-color: #2196F3 !important;
+    }
+    
+    .btn-cadastrar:hover {
+      background-color: #0b7dda !important;
+    }
+
+    /* Tabela de resultados */
+    table {
+      width: calc(100% - 40px);
+      margin: 20px;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f4f4f4;
+      position: sticky;
+      top: 0;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Rodapé */
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    }
+
+    .divider {
+      display: block;
+      width: 100%;
+      height: 5px;
+      margin: 0.1px 0.5px;
+    }
+
+    /* Modal de edição */
+    #modalEdicao {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      width: 500px;
+      max-width: 90%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .modal-content label {
+      margin-top: 15px;
+      display: block;
+    }
+
+    .modal-content select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+
+    .modal-buttons {
+      margin-top: 25px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .modal-buttons button {
+      padding: 10px 20px;
+      width: auto;
+    }
+
+    #btnExcluir {
+      background-color: #f44336;
+    }
+
+    #btnExcluir:hover {
+      background-color: #d32f2f;
+    }
+
+    #btnCancelar {
+      background-color: #757575;
+    }
+
+    #btnCancelar:hover {
+      background-color: #616161;
+    }
+
+    /* Mensagens de erro */
+    .error-message {
+      color: #f44336;
+      text-align: center;
+      padding: 10px;
+    }
+
+    /* Responsividade */
+    @media (max-width: 1200px) {
+      #filtros {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      #filtros {
+        grid-template-columns: 1fr;
+      }
+      
+      header {
+        flex-direction: column;
+        padding: 15px;
+      }
+      
+      header h1 {
+        margin: 10px 0;
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Cabeçalho com logos e título -->
+  <header>
+    <img src="src/LOGO_GOV.png" alt="Logo Governo" class="logo-left">
+    <h1>Controle GMP (SEPROR)</h1>
+    <img src="src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
+  </header>
+
+  <!-- Seção de filtros -->
+  <div id="filtros">
+    <!-- Filtro por tipo -->
+    <div>
+      <label for="filtroTipo">Tipo:</label>
+      <select id="filtroTipo">
+        <option value="">Todos</option>
+        <!-- Opções serão preenchidas dinamicamente -->
+      </select>
+    </div>
+    
+    <!-- Filtro por setor -->
+    <div>
+      <label for="filtroSetor">Setor:</label>
+      <select id="filtroSetor">
+        <option value="">Todos</option>
+        <option value="AADESAM">AADESAM</option>
+        <option value="ASCOM">ASCOM</option>
+        <option value="ASJUR">ASJUR</option>
+        <option value="DAF">DAF</option>
+        <option value="DEPA">DEPA</option>
+        <option value="DEPE">DEPE</option>
+        <option value="ENGENHARIA">ENGENHARIA</option>
+        <option value="GABINETE">GABINETE</option>
+        <option value="GSE">GSE</option>
+        <option value="GECONP">GECONP</option>
+        <option value="GELIC">GELIC</option>
+        <option value="GESA">GESA</option>
+        <option value="GEOF">GEOF</option>
+        <option value="GERH">GERH</option>
+        <option value="GILOG">GILOG</option>
+        <option value="GMP">GMP</option>
+        <option value="NUCAP">NUCAP</option>
+        <option value="OUVIDORIA">OUVIDORIA</option>
+        <option value="PAA">PAA</option>
+        <option value="PCODEPA">PCODEPA</option>
+        <option value="PROTOCOLO">PROTOCOLO</option>
+        <option value="SEAPAF">SEAPAF</option>
+        <option value="SEPA">SEPA</option>
+        <option value="TRANSPORTES">TRANSPORTES</option>
+        <option value="UCI">UCI</option>
+      </select>
+    </div>
+    
+    <!-- Filtro por usuário -->
+    <div>
+      <label for="filtroUsuario">Usuário:</label>
+      <input type="text" id="filtroUsuario" placeholder="Digite o nome do usuário">
+    </div>
+    
+    <!-- Filtro por número de tombo -->
+    <div>
+      <label for="filtroTombo">Número do Tombo:</label>
+      <input type="text" id="filtroTombo" placeholder="Digite o número do tombo">
+    </div>
+    
+    <!-- Botão de filtrar -->
+    <div>
+      <button onclick="consultar()">Filtrar</button>
+    </div>
+    
+    <!-- Botão de exportar para Excel -->
+    <div>
+      <button onclick="gerarExcel()">Exportar para Excel</button>
+    </div>
+
+    <!-- Botão de cadastrar novo equipamento -->
+    <div>
+      <button onclick="window.location.href='gmp'" 
+              class="btn-cadastrar">
+        Cadastrar Equipamento
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabela de resultados -->
+  <table id="tabelaEquipamentos">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Número de Série</th>
+        <th>Número do Tombo</th>
+        <th>Setor</th>
+        <th>Usuário</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Resultados serão carregados dinamicamente -->
+    </tbody>
+  </table>
+
+  <!-- Modal de Edição -->
+  <div id="modalEdicao">
+    <div class="modal-content">
+      <h2>Editar Equipamento</h2>
+      <form id="formEdicao">
+        <input type="hidden" id="editarId">
+        
+        <label for="editarTipo">Tipo:</label>
+        <select id="editarTipo" required>
+          <!-- Opções serão preenchidas dinamicamente -->
+        </select>
+        
+        <label for="editarNumeroSerie">Número de Série:</label>
+        <input type="text" id="editarNumeroSerie" required placeholder="Número de série do equipamento">
+        
+        <label for="editarNumeroTombo">Número do Tombo:</label>
+        <input type="text" id="editarNumeroTombo" required placeholder="Número de tombamento">
+        
+        <label for="editarSetor">Setor:</label>
+        <select id="editarSetor" required>
+          <option value="">SELECIONE UM SETOR</option>
+          <option value="AADESAM">AADESAM</option>
+          <option value="ASCOM">ASCOM</option>
+          <option value="ASJUR">ASJUR</option>
+          <option value="DAF">DAF</option>
+          <option value="DEPA">DEPA</option>
+          <option value="DEPE">DEPE</option>
+          <option value="ENGENHARIA">ENGENHARIA</option>
+          <option value="GABINETE">GABINETE</option>
+          <option value="GSE">GSE</option>
+          <option value="GECONP">GECONP</option>
+          <option value="GELIC">GELIC</option>
+          <option value="GESA">GESA</option>
+          <option value="GEOF">GEOF</option>
+          <option value="GERH">GERH</option>
+          <option value="GILOG">GILOG</option>
+          <option value="GMP">GMP</option>
+          <option value="NUCAP">NUCAP</option>
+          <option value="OUVIDORIA">OUVIDORIA</option>
+          <option value="PAA">PAA</option>
+          <option value="PCODEPA">PCODEPA</option>
+          <option value="PROTOCOLO">PROTOCOLO</option>
+          <option value="SEAPAF">SEAPAF</option>
+          <option value="SEPA">SEPA</option>
+          <option value="TRANSPORTES">TRANSPORTES</option>
+          <option value="UCI">UCI</option>
+        </select>
+        
+        <label for="editarUsuario">Usuário:</label>
+        <input type="text" id="editarUsuario" required placeholder="Nome do usuário responsável">
+        
+        <div class="modal-buttons">
+          <button type="button" id="btnExcluir" onclick="confirmarExclusao()">Excluir</button>
+          <div>
+            <button type="button" id="btnCancelar" onclick="fecharModal()">Cancelar</button>
+            <button type="button" onclick="salvarEdicao()">Salvar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Rodapé -->
+  <footer>
+    <img src="src/LINHA.png" alt="Linha divisória" class="divider">
+    <p>&copy; 2025 - Secretária de Estado de Produção Rural - SEPROR. Desenvolvido por Renato Pedrozo (GILOG)</p>
+  </footer>
+
+  <!-- Script JavaScript -->
+  <script>
+    /**
+     * Armazena a lista de tipos de equipamentos
+     * @type {Array<{id: number, nome: string}>}
+     */
+    let tiposEquipamentos = [];
+
+    /**
+     * Carrega os tipos de equipamentos do servidor e preenche os selects
+     */
+    async function carregarTiposEquipamentos() {
+      try {
+        const response = await fetch('http://10.46.1.20:3000/tipos-equipamentos');
+        
+        if (!response.ok) {
+          throw new Error('Erro ao carregar tipos de equipamentos');
+        }
+        
+        tiposEquipamentos = await response.json();
+        const selectFiltroTipo = document.getElementById('filtroTipo');
+        const selectEditarTipo = document.getElementById('editarTipo');
+        
+        // Limpa e atualiza os selects
+        selectFiltroTipo.innerHTML = '<option value="">Todos</option>';
+        selectEditarTipo.innerHTML = '';
+
+        // Adiciona os tipos aos selects
+        tiposEquipamentos.forEach(tipo => {
+          // Para o filtro
+          const optionFiltro = document.createElement('option');
+          optionFiltro.value = tipo.nome;
+          optionFiltro.textContent = tipo.nome;
+          selectFiltroTipo.appendChild(optionFiltro);
+
+          // Para o modal de edição
+          const optionEditar = document.createElement('option');
+          optionEditar.value = tipo.nome;
+          optionEditar.textContent = tipo.nome;
+          selectEditarTipo.appendChild(optionEditar);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar tipos de equipamentos:', error);
+        alert('Erro ao carregar tipos de equipamentos. Por favor, recarregue a página.');
+      }
+    }
+
+    /**
+     * Abre o modal de edição com os dados do equipamento
+     * @param {Object} equipamento - Objeto com os dados do equipamento
+     */
+    function abrirModalEdicao(equipamento) {
+      // Preenche os campos do modal
+      document.getElementById('editarId').value = equipamento.id;
+      document.getElementById('editarTipo').value = equipamento.tipo;
+      document.getElementById('editarNumeroSerie').value = equipamento.numero_serie;
+      document.getElementById('editarNumeroTombo').value = equipamento.numero_tombo;
+      document.getElementById('editarSetor').value = equipamento.setor;
+      document.getElementById('editarUsuario').value = equipamento.usuario;
+      
+      // Exibe o modal
+      document.getElementById('modalEdicao').style.display = 'flex';
+    }
+
+    /**
+     * Fecha o modal de edição
+     */
+    function fecharModal() {
+      document.getElementById('modalEdicao').style.display = 'none';
+    }
+
+    /**
+     * Salva as alterações do equipamento no servidor
+     */
+    async function salvarEdicao() {
+      const id = document.getElementById('editarId').value;
+      const tipo = document.getElementById('editarTipo').value;
+      const numero_serie = document.getElementById('editarNumeroSerie').value.trim();
+      const numero_tombo = document.getElementById('editarNumeroTombo').value.trim();
+      const setor = document.getElementById('editarSetor').value;
+      const usuario = document.getElementById('editarUsuario').value.trim();
+
+      // Validação dos campos
+      if (!tipo || !numero_serie || !numero_tombo || !setor || !usuario) {
+        alert('Todos os campos são obrigatórios!');
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://10.46.1.20:3000/equipamentos/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tipo,
+            numero_serie,
+            numero_tombo,
+            setor,
+            usuario
+          }),
+        });
+
+        if (response.ok) {
+          alert('Equipamento atualizado com sucesso!');
+          fecharModal();
+          await consultar(); // Atualiza a tabela
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Erro desconhecido');
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar equipamento:', error);
+        alert(`Erro ao atualizar: ${error.message}`);
+      }
+    }
+
+    /**
+     * Confirma a exclusão de um equipamento
+     */
+    function confirmarExclusao() {
+      const id = document.getElementById('editarId').value;
+      if (confirm('Tem certeza que deseja excluir este equipamento?\nEsta ação não pode ser desfeita.')) {
+        excluirEquipamento(id);
+      }
+    }
+
+    /**
+     * Exclui um equipamento do servidor
+     * @param {string} id - ID do equipamento a ser excluído
+     */
+    async function excluirEquipamento(id) {
+      try {
+        const response = await fetch(`http://10.46.1.20:3000/equipamentos/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          alert('Equipamento excluído com sucesso!');
+          fecharModal();
+          await consultar(); // Atualiza a tabela
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Erro desconhecido');
+        }
+      } catch (error) {
+        console.error('Erro ao excluir equipamento:', error);
+        alert(`Erro ao excluir: ${error.message}`);
+      }
+    }
+
+    /**
+     * Consulta equipamentos com base nos filtros aplicados
+     */
+    async function consultar() {
+      const tipo = document.getElementById('filtroTipo').value;
+      const setor = document.getElementById('filtroSetor').value;
+      const usuario = document.getElementById('filtroUsuario').value;
+      const numeroTombo = document.getElementById('filtroTombo').value;
+
+      const tbody = document.querySelector('#tabelaEquipamentos tbody');
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Carregando...</td></tr>';
+
+      try {
+        const url = new URL('http://10.46.1.20:3000/consultar');
+        if (tipo) url.searchParams.append('tipo', tipo);
+        if (setor) url.searchParams.append('setor', setor);
+        if (usuario) url.searchParams.append('usuario', usuario);
+        if (numeroTombo) url.searchParams.append('numeroTombo', numeroTombo);
+
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error('Erro ao carregar equipamentos');
+        }
+        
+        const data = await response.json();
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhum equipamento encontrado com os filtros selecionados</td></tr>';
+          return;
+        }
+
+        // Preenche a tabela com os resultados
+        data.forEach(equipamento => {
+          const row = document.createElement('tr');
+          
+          // Escapa os valores para prevenir XSS
+          const escapeHtml = (unsafe) => {
+            return unsafe.replace(/[&<"'>]/g, (m) => {
+              switch (m) {
+                case '&': return '&amp;';
+                case '<': return '&lt;';
+                case '>': return '&gt;';
+                case '"': return '&quot;';
+                case "'": return '&#039;';
+                default: return m;
+              }
+            });
+          };
+
+          row.innerHTML = `
+            <td>${escapeHtml(equipamento.tipo) || '-'}</td>
+            <td>${escapeHtml(equipamento.numero_serie) || '-'}</td>
+            <td>${escapeHtml(equipamento.numero_tombo) || '-'}</td>
+            <td>${escapeHtml(equipamento.setor) || '-'}</td>
+            <td>${escapeHtml(equipamento.usuario) || '-'}</td>
+            <td>
+              <button onclick="abrirModalEdicao(${JSON.stringify(equipamento).replace(/"/g, '&quot;')})">Editar</button>
+            </td>
+          `;
+          
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Erro ao consultar equipamentos:', error);
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: red;">Erro ao carregar equipamentos. Tente novamente.</td></tr>';
+      }
+    }
+
+    /**
+     * Gera um relatório em Excel com os equipamentos filtrados
+     */
+    async function gerarExcel() {
+      const tipo = document.getElementById('filtroTipo').value;
+      const setor = document.getElementById('filtroSetor').value;
+      const usuario = document.getElementById('filtroUsuario').value;
+      const numeroTombo = document.getElementById('filtroTombo').value;
+
+      // Feedback visual durante o processamento
+      const btnExcel = document.querySelector('button[onclick="gerarExcel()"]');
+      const originalText = btnExcel.textContent;
+      btnExcel.textContent = 'Gerando Excel...';
+      btnExcel.disabled = true;
+
+      try {
+        const url = new URL('http://10.46.1.20:3000/gerar-excel');
+        if (tipo) url.searchParams.append('tipo', tipo);
+        if (setor) url.searchParams.append('setor', setor);
+        if (usuario) url.searchParams.append('usuario', usuario);
+        if (numeroTombo) url.searchParams.append('numeroTombo', numeroTombo);
+
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Erro ao gerar Excel');
+        }
+
+        const blob = await response.blob();
+        const downloadUrl = URL.createObjectURL(blob);
+        
+        // Cria link temporário para download
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `relatorio_equipamentos_${new Date().toISOString().split('T')[0]}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        
+        // Limpeza
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(downloadUrl);
+        }, 100);
+
+      } catch (error) {
+        console.error('Erro ao gerar Excel:', error);
+        alert(`Erro ao gerar Excel: ${error.message}`);
+      } finally {
+        // Restaura o botão
+        btnExcel.textContent = originalText;
+        btnExcel.disabled = false;
+      }
+    }
+
+    // Carrega os dados quando a página é carregada
+    window.addEventListener('DOMContentLoaded', () => {
+      consultar();
+      carregarTiposEquipamentos();
+    });
+  </script>
+</body>
+</html>

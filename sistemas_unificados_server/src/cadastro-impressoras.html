@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Impressoras - SEPROR</title>
+    <link rel="shortcut icon" href="src/logo_gov.ico" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            
+            background-repeat: no-repeat;
+            background-position: left;
+            background-size: 35%;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        header .logo-left {
+            width: 140px;
+        }
+
+        header .logo-right {
+            width: 100px;
+        }
+
+        .container {
+            width: 95%; 
+            max-width: none; 
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-x: auto; 
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="checkbox"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: #033d6dd7;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #002b50d7;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #033c6bd7;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .edit-btn {
+            background-color: #4CAF50;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;            
+            width: 100%;
+        }
+
+        .divider {
+            display: block;
+            width: 100%;
+            height: 5px;
+            left: 0;
+            margin: 0.1px 0.5px;
+        }
+        #nome, #editNome {
+    text-transform: uppercase;
+}
+    </style>
+</head>
+<body>
+    <header>
+    <a href="http://10.46.2.3:3000/dashboard"><img src="/src/LOGO_GOV.png" alt="Logo Governo" class="logo-left"></a>
+    <h1>Cadastro de Impressoras - SEPROR</h1>
+    <img src="src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
+</header>
+
+    <div class="container">
+        <h2>Cadastrar Nova Impressora</h2>
+        <form id="impressoraForm">
+            <div class="form-group">
+                <label for="nome">Nome da Impressora:</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+            <div class="form-group">
+                <label for="ip">Endereço IP:</label>
+                <input type="text" id="ip" name="ip" required placeholder="Ex: 10.46.6.0">
+            </div>
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="colorida" name="colorida">
+                <label for="colorida">Impressora Colorida</label>
+            </div>
+            <button type="submit" id="submitBtn">Salvar Impressora</button>
+        </form>
+
+        <h2>Impressoras Cadastradas</h2>
+        <table id="impressorasTable">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>IP</th>
+                    <th>Tipo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Os dados serão preenchidos via JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal para edição -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Editar Impressora</h2>
+            <form id="editForm">
+                <input type="hidden" id="editId">
+                <div class="form-group">
+                    <label for="editNome">Nome da Impressora:</label>
+                    <input type="text" id="editNome" required>
+                </div>
+                <div class="form-group">
+                    <label for="editIp">Endereço IP:</label>
+                    <input type="text" id="editIp" required>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="editColorida">
+                    <label for="editColorida">Impressora Colorida</label>
+                </div>
+                <button type="submit">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <img src="src/LINHA.PNG" alt="Linha divisória" class="divider">
+        <p>&copy; 2025 - Secretária de Estado de Produção Rural - SEPROR. Desenvolvido por Renato Pedrozo (GILOG)</p>
+    </footer>
+
+    <script>
+        // Desabilitar o clique direito
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        // Variáveis globais
+        let impressoras = [];
+        let editModal = document.getElementById('editModal');
+        let closeBtn = document.querySelector('.close');
+
+        // Função para carregar as impressoras
+        async function loadImpressoras() {
+            try {
+                const response = await fetch('http://10.46.2.3:3000/impressoras');
+                if (!response.ok) throw new Error('Erro ao carregar impressoras');
+                
+                impressoras = await response.json();
+                renderImpressoras();
+            } catch (error) {
+                
+                alert('Erro ao carregar impressoras. ' + error.message);
+            }
+        }
+
+        // Função para renderizar a tabela de impressoras
+        function renderImpressoras() {
+            const tbody = document.querySelector('#impressorasTable tbody');
+            tbody.innerHTML = '';
+
+            impressoras.forEach(impressora => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${impressora.nome}</td>
+                    <td>${impressora.ip}</td>
+                    <td>${impressora.colorida ? 'Colorida' : 'Monocromática'}</td>
+                    <td class="actions">
+                        <button class="edit-btn" data-id="${impressora.id}">Editar</button>
+                        <button class="delete-btn" data-id="${impressora.id}">Excluir</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Adiciona eventos aos botões
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', openEditModal);
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', deleteImpressora);
+            });
+        }
+
+        // Função para cadastrar nova impressora
+        async function cadastrarImpressora(event) {
+            event.preventDefault();
+            
+            const nome = document.getElementById('nome').value.toUpperCase();
+            const ip = document.getElementById('ip').value;
+            const colorida = document.getElementById('colorida').checked;
+
+            try {
+                const response = await fetch('http://10.46.2.3:3000/impressoras', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ nome, ip, colorida }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Erro ao cadastrar impressora');
+                }
+
+                const novaImpressora = await response.json();
+                impressoras.push(novaImpressora);
+                renderImpressoras();
+                
+                // Limpa o formulário
+                document.getElementById('impressoraForm').reset();
+                alert('Impressora cadastrada com sucesso!');
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao cadastrar impressora: ' + error.message);
+            }
+        }
+
+        // Função para abrir o modal de edição
+        function openEditModal(event) {
+            const id = parseInt(event.target.getAttribute('data-id'));
+            const impressora = impressoras.find(i => i.id === id);
+
+            if (!impressora) return;
+
+            document.getElementById('editId').value = impressora.id;
+            document.getElementById('editNome').value = impressora.nome;
+            document.getElementById('editIp').value = impressora.ip;
+            document.getElementById('editColorida').checked = impressora.colorida;
+
+            editModal.style.display = 'block';
+        }
+
+        // Função para fechar o modal
+        function closeModal() {
+            editModal.style.display = 'none';
+        }
+
+        // Função para salvar edição
+        async function saveEdit(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('editId').value;
+            const nome = document.getElementById('editNome').value.toUpperCase();
+            const ip = document.getElementById('editIp').value;
+            const colorida = document.getElementById('editColorida').checked;
+
+            try {
+                const response = await fetch(`http://10.46.2.3:3000/impressoras/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ nome, ip, colorida }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Erro ao atualizar impressora');
+                }
+
+                const updatedImpressora = await response.json();
+                
+                // Atualiza a lista local
+                const index = impressoras.findIndex(i => i.id === updatedImpressora.id);
+                if (index !== -1) {
+                    impressoras[index] = updatedImpressora;
+                }
+                
+                renderImpressoras();
+                closeModal();
+                alert('Impressora atualizada com sucesso!');
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao atualizar impressora: ' + error.message);
+            }
+        }
+
+        // Função para excluir impressora - VERSÃO CORRIGIDA
+        async function deleteImpressora(event) {
+            const id = parseInt(event.target.getAttribute('data-id'));
+            
+            if (!confirm('Tem certeza que deseja excluir esta impressora?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://10.46.2.3:3000/impressoras/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                // Verifica se a requisição foi bem sucedida
+                if (response.status === 404) {
+                    // Se for 404, remove localmente mesmo assim
+                    impressoras = impressoras.filter(i => i.id !== id);
+                    renderImpressoras();
+                    alert('Impressora não encontrada no servidor, mas foi removida localmente.');
+                    return;
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`Erro ${response.status}: ${response.statusText}`);
+                }
+
+                // Remove da lista local
+                impressoras = impressoras.filter(i => i.id !== id);
+                renderImpressoras();
+                
+                // Tenta mostrar mensagem de sucesso do servidor ou padrão
+                try {
+                    const data = await response.json();
+                    alert(data.message || 'Impressora excluída com sucesso!');
+                } catch {
+                    alert('Impressora excluída com sucesso!');
+                }
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao excluir impressora: ' + error.message);
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('impressoraForm').addEventListener('submit', cadastrarImpressora);
+        document.getElementById('editForm').addEventListener('submit', saveEdit);
+        closeBtn.addEventListener('click', closeModal);
+        window.addEventListener('click', (event) => {
+            if (event.target === editModal) {
+                closeModal();
+            }
+        });
+
+        // Carrega as impressoras ao iniciar
+        document.addEventListener('DOMContentLoaded', loadImpressoras);
+    </script>
+</body>
+</html>

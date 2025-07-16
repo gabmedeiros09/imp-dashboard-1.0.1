@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Equipamentos</title>
+  <style>
+    /* Estilos gerais da página */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding-bottom: 100px;
+      background-color: #f5f5f5;
+    }
+
+    /* Estilo do cabeçalho */
+    header {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    header .logo-left {
+      width: 120px;
+      height: auto;
+    }
+
+    header .logo-right {
+      width: 85px;
+      height: auto;
+    }
+
+    /* Container principal */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* Estilo dos formulários */
+    .form-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 20px 0;
+      padding: 20px;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* Estilo dos elementos do formulário */
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input, select {
+      margin-top: 5px;
+      padding: 8px;
+      width: 96.2%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    select {
+      width: 100%;
+    }
+
+    /* Estilo dos botões */
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #238f26;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .btn-consultar {
+      background-color: #2196F3 !important;
+    }
+    
+    .btn-consultar:hover {
+      background-color: #0b7dda !important;
+    }
+
+    /* Container do botão de consulta */
+    .consultar-btn-container {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    /* Divisores visuais */
+    hr {
+      margin: 20px auto;
+      border: 0;
+      border-top: 1px solid #ddd;
+      width: 80%;
+    }
+
+    .divider {
+      display: block;
+      width: 100%;
+      height: 5px;
+      margin: 0.1px 0.5px;
+    }
+
+    /* Rodapé */
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* Títulos */
+    h2 {
+      color: #333;
+      margin-top: 0;
+      text-align: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+  <!-- Cabeçalho com logos e título -->
+  <header>
+    <img src="src/LOGO_GOV.png" alt="Logo Governo" class="logo-left">
+    <h1>Controle GMP (SEPROR)</h1>
+    <img src="src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
+  </header>
+
+  <!-- Conteúdo principal -->
+  <div class="main-content">
+    <!-- Formulário para cadastrar novo tipo de equipamento -->
+    <div class="form-container">
+      <form id="cadastroTipoForm">
+        <h2>Cadastrar Novo Tipo de Equipamento</h2>
+        <label for="novoTipo">Nome do Tipo:</label>
+        <input type="text" id="novoTipo" name="novoTipo" required placeholder="Ex: Notebook, Impressora, etc.">
+        <button type="submit">Cadastrar Tipo</button>
+      </form>
+    </div>
+
+    <hr>   
+    
+    <!-- Formulário de Cadastro de Equipamentos -->
+    <div class="form-container">
+      <form id="cadastroForm">
+        <h2>Cadastrar Novo Equipamento</h2>
+        
+        <label for="tipo">Tipo de Equipamento:</label>
+        <select id="tipo" name="tipo" required>
+          <option value="">Carregando tipos...</option>
+        </select>
+        
+        <label for="numeroSerie">Número de Série:</label>
+        <input type="text" id="numeroSerie" name="numeroSerie" required placeholder="Número de série do equipamento">
+        
+        <label for="numeroTombo">Número do Tombo:</label>
+        <input type="text" id="numeroTombo" name="numeroTombo" required placeholder="Número de tombamento">
+        
+        <label for="setor">Setor Alocado:</label>
+        <select id="setor" name="setor" required>
+          <option value="">SELECIONE UM SETOR</option>
+          <option value="AADESAM">AADESAM</option>
+          <option value="ASCOM">ASCOM</option>
+          <option value="ASJUR">ASJUR</option>
+          <option value="DAF">DAF</option>
+          <option value="DEPA">DEPA</option>
+          <option value="DEPE">DEPE</option>
+          <option value="ENGENHARIA">ENGENHARIA</option>
+          <option value="GABINETE">GABINETE</option>
+          <option value="GSE">GSE</option>
+          <option value="GECONP">GECONP</option>
+          <option value="GELIC">GELIC</option>
+          <option value="GESA">GESA</option>
+          <option value="GEOF">GEOF</option>
+          <option value="GERH">GERH</option>
+          <option value="GILOG">GILOG</option>
+          <option value="GMP">GMP</option>
+          <option value="NUCAP">NUCAP</option>
+          <option value="OUVIDORIA">OUVIDORIA</option>
+          <option value="PAA">PAA</option>
+          <option value="PCODEPA">PCODEPA</option>
+          <option value="PROTOCOLO">PROTOCOLO</option>
+          <option value="SEAPAF">SEAPAF</option>
+          <option value="SEPA">SEPA</option>
+          <option value="TRANSPORTES">TRANSPORTES</option>
+          <option value="UCI">UCI</option>
+        </select>
+        
+        <label for="usuario">Usuário:</label>
+        <input type="text" id="usuario" name="usuario" required placeholder="Nome do usuário responsável">
+        
+        <button type="submit" id="btnCadastrar">Cadastrar Equipamento</button>
+      </form>
+    </div>
+
+    <!-- Botão de Consultar/Editar -->
+    <div class="consultar-btn-container">
+      <button onclick="window.location.href='gmp-consulta'" 
+              class="btn-consultar">
+        Consultar/Editar Equipamento
+      </button>
+    </div>
+  </div>
+
+  <!-- Rodapé -->
+  <footer>
+    <img src="src/LINHA.png" alt="Linha divisória" class="divider">
+    <p>&copy; 2025 - Secretária de Estado de Produção Rural - SEPROR. Desenvolvido por Renato Pedrozo (GILOG)</p>
+  </footer>
+
+  <!-- Script JavaScript -->
+  <script>
+    /**
+     * Função para carregar os tipos de equipamentos do servidor
+     * e preencher o dropdown de seleção
+     */
+    async function carregarTiposEquipamentos() {
+      try {
+        const response = await fetch('http://10.46.1.20:3000/tipos-equipamentos');
+        
+        if (!response.ok) {
+          throw new Error('Erro ao carregar tipos de equipamentos');
+        }
+        
+        const tipos = await response.json();
+        const selectTipo = document.getElementById('tipo');
+
+        // Limpa e atualiza as opções
+        selectTipo.innerHTML = '';
+        
+        // Adiciona opção padrão
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECIONE UM TIPO';
+        selectTipo.appendChild(defaultOption);
+        
+        // Adiciona os tipos retornados pelo servidor
+        tipos.forEach(tipo => {
+          const option = document.createElement('option');
+          option.value = tipo.nome;
+          option.textContent = tipo.nome;
+          selectTipo.appendChild(option);
+        });
+        
+      } catch (error) {
+        console.error('Erro ao carregar tipos:', error);
+        alert('Erro ao carregar tipos de equipamentos. Tente recarregar a página.');
+      }
+    }
+
+    /**
+     * Event listener para o formulário de cadastro de tipo de equipamento
+     */
+    document.getElementById('cadastroTipoForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const novoTipo = document.getElementById('novoTipo').value.trim();
+      
+      if (!novoTipo) {
+        alert('Por favor, informe o nome do tipo de equipamento');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://10.46.1.20:3000/tipos-equipamentos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ nome: novoTipo }),
+        });
+
+        if (response.ok) {
+          alert('Tipo de equipamento cadastrado com sucesso!');
+          document.getElementById('novoTipo').value = '';
+          await carregarTiposEquipamentos(); // Atualiza a lista de tipos
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Erro desconhecido');
+        }
+      } catch (error) {
+        console.error('Erro ao cadastrar tipo:', error);
+        alert(`Erro ao cadastrar: ${error.message}`);
+      }
+    });
+
+    /**
+     * Event listener para o formulário de cadastro de equipamento
+     */
+    document.getElementById('cadastroForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      // Obtém os valores dos campos
+      const tipo = document.getElementById('tipo').value;
+      const numeroSerie = document.getElementById('numeroSerie').value.trim();
+      const numeroTombo = document.getElementById('numeroTombo').value.trim();
+      const setor = document.getElementById('setor').value;
+      const usuario = document.getElementById('usuario').value.trim();
+
+      // Validação básica
+      if (!tipo || !numeroSerie || !numeroTombo || !setor || !usuario) {
+        alert('Por favor, preencha todos os campos obrigatórios');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://10.46.1.20:3000/equipamentos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            tipo, 
+            numero_serie: numeroSerie, 
+            numero_tombo: numeroTombo, 
+            setor, 
+            usuario 
+          }),
+        });
+
+        if (response.ok) {
+          alert('Equipamento cadastrado com sucesso!');
+          document.getElementById('cadastroForm').reset();
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Erro desconhecido');
+        }
+      } catch (error) {
+        console.error('Erro ao cadastrar equipamento:', error);
+        alert(`Erro ao cadastrar: ${error.message}`);
+      }
+    });
+
+    // Carrega os tipos de equipamento quando a página é carregada
+    window.addEventListener('DOMContentLoaded', () => {
+      carregarTiposEquipamentos();
+    });
+  </script>
+</body>
+</html>

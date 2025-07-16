@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Manrope">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Impressoras (GILOG)</title>
+    <meta http-equiv="refresh" content="600">
+    <link rel="shortcut icon" href="src/logo_gov.ico" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            padding-bottom: 70px;
+            background-image: url("/src/ELEMENTO.PNG");
+            background-repeat: no-repeat;
+            background-position: left;
+            background-size: 40%;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        header .logo-left {
+            width: 140px;
+        }
+
+        header .logo-right {
+            width: 100px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 23px;
+            gap: 5px;
+        }
+
+        .container a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+         .container .number_series{
+            display: flex;
+            font-family: 'Manrope', serif; 
+            /* -webkit-text-stroke-width: 0.05px; largura da borda */
+            /* -webkit-text-stroke-color: #000; cor da borda */           
+            font-weight: 800;
+            font-size:11px;
+            justify-content: center;
+            align-items: center;
+            padding: 0 0 0 20px;          
+            margin: -0.4rem 0 0 0;         
+            float: inline-start;
+            text-align: center;
+            color: rgb(72, 156, 252);
+        }
+
+        .button {
+            background-color: #033c6bd7;
+            color: white;
+            font-weight: bold;
+            border: none;
+            padding: 20px 20px 10px 20px;
+            margin: 10px;
+            text-align: center;
+            font-size: 22px;
+            width: 320px;
+            height: 270px;
+            cursor: pointer;
+            border-radius: 7px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            justify-content: flex-start;
+        }
+
+        .button:hover {
+            background-color: #003bddb7;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .button.offline {
+            background-color: #333;
+            cursor: not-allowed;
+        }
+
+        .button-header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin: 0 0 5px 0;
+            align-items: center;
+        }
+
+        .printer-number {
+            font-size: 14px;
+            margin: 0;
+            font-style: italic;
+        }
+
+        .printer-status {
+           font-size: 13px; 
+           color: white; 
+           margin-top: 0px; 
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ccc;
+        }
+
+        .title {
+            font-family: 'Manrope', serif;
+            margin: 5px 0;
+            font-size: 22px;
+        }
+
+        .ip {
+            font-size: 14px;
+            font-family: 'Manrope', serif;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .toner-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 97.7%;
+            position: absolute;
+            bottom: 0px;
+            left: 1.3%;
+            gap: 5px;
+            justify-content: flex-end;
+        }
+
+        .toner-colors {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .toner-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+        }
+
+        .toner-percentages {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        .toner {
+            padding: 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 12px;
+            width: 100%;
+        }
+
+        .info-color {
+            position: absolute;
+            bottom: 0px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .toner-color.black {
+            background-color: black;
+            border: 1px solid #333;
+        }
+
+        .toner-color.cyan {
+            background-color: cyan;
+            border: 1px solid #00a2a2;
+        }
+
+        .toner-color.magenta {
+            background-color: magenta;
+            border: 1px solid #a200a2;
+        }
+
+        .toner-color.yellow {
+            background-color: yellow;
+            border: 1px solid #a2a200;
+        }
+
+        .toner.high {
+            background-color: rgb(32, 136, 6);
+            font-weight: bold;
+            font-size: 23px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .toner.medium {
+            background-color: rgb(247, 174, 38);
+            font-weight: bold;
+            font-size: 23px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .toner.low {
+            background-color: #df1a1ada;
+            font-weight: bold;
+            font-size: 23px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .divider {
+            display: block;
+            width: 100%;
+            height: 5px;
+            left: 0;
+            margin: 0.1px 0.5px;
+        }
+
+        @media (max-width: 768px) {
+            .button {
+                width: 160px;
+                height: 90px;
+                font-size: 16px;
+            }
+            .toner-color {
+                width: 25px;
+                height: 25px;
+            }
+            .toner {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .button {
+                width: 140px;
+                height: 80px;
+                font-size: 14px;
+            }
+            header {
+                flex-direction: column;
+                padding: 10px;
+            }
+            header .logo-left,
+            header .logo-right {
+                width: 80px;
+            }
+            header h1 {
+                font-size: 1.2rem;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="/src/LOGO_GOV.png" alt="Logo Governo" class="logo-left">
+        <h1>Gerenciador de Impressoras (SEPROR)</h1>
+        <div>
+            <a href="/cadastro-impressoras.html" style="color: white; margin-right: 20px; text-decoration: none;">Cadastrar Impressoras</a>
+            <img src="src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Os botões das impressoras serão gerados dinamicamente pelo JavaScript -->
+         
+     
+    </div>
+   
+
+    <footer>
+        <img src="src/LINHA.PNG" alt="Linha divisória" class="divider">
+        <p>&copy; 2025 - Secretária de Estado de Produção Rural - SEPROR. Desenvolvido por Renato Pedrozo (GILOG) em colaboração com ...</p>
+    </footer>
+
+    <script>
+        // Configurações iniciais
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        // Dados das impressoras
+        const PRINTERS = {
+            "10.46.6.1": "IMP_GAB",
+            "10.46.6.2": "IMP_GAB_COLOR",
+            "10.46.6.3": "IMP_GSE",
+            "10.46.6.4": "IMP_GSE_COLOR",
+            "10.46.6.5": "IMP_DAF",
+            "10.46.6.6": "IMP_ASSJUR",
+            "10.46.6.7": "IMP_CORREDOR_DARF",
+            "10.46.6.8": "IMP_CORREDOR_RH",
+            "10.46.6.9": "IMP_CORREDOR_GAB",
+            "10.46.6.10": "IMP_PROTOCOLO",
+            "10.46.6.11": "GILOG",
+            "10.46.6.12": "IMP_PCODEPA",
+            "10.46.6.13": "IMP_UCI",
+            "10.46.6.15": "IMP_GAB_SEPA"
+        };
+
+        const COLOR_PRINTERS = ["10.46.6.2", "10.46.6.4"];
+        let impressoras = [];
+
+        /**
+         * Carrega as impressoras do servidor ou usa fallback
+         */
+        async function loadPrinters() {
+            try {
+                const response = await fetch('http://10.46.2.3:3000/impressoras');
+                if (!response.ok) throw new Error('Erro ao carregar impressoras');
+                
+                impressoras = await response.json();
+                sortPrinters();
+                createPrinterButtons();
+                updateAllTonerStatus();
+            } catch (error) {
+                useFallbackPrinters();
+            }
+        }
+
+        /**
+         * Ordena impressoras por endereço IP
+         */
+        function sortPrinters() {
+            impressoras.sort((a, b) => {
+                const lastA = parseInt(a.ip.split('.').pop());
+                const lastB = parseInt(b.ip.split('.').pop());
+                return lastA - lastB;
+            });
+        }
+
+        /**
+         * Usa configuração fallback quando o servidor não está disponível
+         */
+        function useFallbackPrinters() {
+            impressoras = Object.keys(PRINTERS).map(ip => ({
+                ip,
+                nome: PRINTERS[ip],
+                colorida: COLOR_PRINTERS.includes(ip)
+            }));
+            sortPrinters();
+            createPrinterButtons();
+            updateAllTonerStatus();
+        }
+
+        /**
+         * Cria os botões das impressoras dinamicamente
+         */
+        function createPrinterButtons() {
+            const container = document.querySelector('.container');
+            container.innerHTML = '';
+
+            impressoras.forEach((impressora, index) => {
+                const buttonHtml = `
+                    <a href="http://${impressora.ip}/sws/index.html" target="_blank">
+                        <button class="button" id="button-${impressora.ip}">
+                            <div class="button-header">
+                                <span class="printer-number" id="counter-${impressora.ip}">Contador: ...</span>
+                                <div class="status-indicator">
+                                    <div class="led" id="led-${impressora.ip}"></div>
+                                    <div class="printer-status" id="printer-status-${impressora.ip}">Aguardando...</div>
+                                </div>
+                            </div>
+                            </br></br>    
+                            <div class="title">${impressora.nome}</div>
+                            <span class="ip">(${impressora.ip})</span>
+                           
+                            ${getTonerHTML(impressora)}
+                        </button>
+                        <span class= "number_series" id="number-series-${impressora.ip}"> N° Série:... </span>
+                    </a>
+                     
+
+                `;
+                container.insertAdjacentHTML('beforeend', buttonHtml);
+            });
+        }
+
+        /**
+         * Retorna o HTML apropriado para o display de toner
+         */
+        function getTonerHTML(impressora) {
+            if (impressora.colorida) {
+                return `
+                    <span class="info-color">
+                        <div class="toner-colors">
+                            <div class="toner-color cyan"></div>
+                            <div class="toner-color magenta"></div>
+                            <div class="toner-color yellow"></div>
+                            <div class="toner-color black"></div>
+                        </div>
+                        <div class="toner-percentages">
+                            <span class="toner" id="toner-${impressora.ip}-black">%</span>
+                            <span class="toner" id="toner-${impressora.ip}-cyan">%</span>
+                            <span class="toner" id="toner-${impressora.ip}-magenta">%</span>
+                            <span class="toner" id="toner-${impressora.ip}-yellow">%</span>
+                        </div>
+                    </span>
+                `;
+            } else {
+                return `
+                    <div class="toner-wrapper">
+                        <span class="toner" id="toner-${impressora.ip}">%</span>
+                    </div>
+                `;
+            }
+        }
+
+        /**
+         * Atualiza o status do toner para uma impressora específica
+         */
+        async function updateTonerStatus(ip) {
+            try {
+                const response = await fetch(`http://10.46.2.3:3000/toner/${ip}`);
+                if (!response.ok) throw new Error('Impressora não respondeu');
+
+                const data = await response.json();
+                const impressora = impressoras.find(i => i.ip === ip);
+                if (!impressora) return;
+
+                updatePrinterUI(ip, data, impressora);
+            } catch (error) {
+                handlePrinterError(ip);
+            }
+        }
+
+        /**
+         * Atualiza a interface do usuário para uma impressora online
+         */
+        function updatePrinterUI(ip, data, impressora) {
+            const buttonElement = document.getElementById(`button-${ip}`);
+            const statusElement = document.getElementById(`printer-status-${ip}`);
+
+            buttonElement.classList.remove('offline');
+            updatePrinterStatus(ip, data.status || 'Desconhecido');
+
+            if (statusElement) {
+                statusElement.textContent = data.status || 'Desconhecido';
+                statusElement.style.color = getStatusColor(data.status);
+            }
+
+            if (impressora.colorida) {
+                updateColorTonerLevels(ip, data.toner || [0, 0, 0, 0]);
+            } else {
+                updateMonoTonerLevel(ip, data.toner ? data.toner[0] || 0 : 0);
+            }
+
+            const counterElement = document.getElementById(`counter-${ip}`);
+            if (counterElement) {
+            counterElement.textContent = data.counter !== null 
+            ? `Contador: ${data.counter}` 
+            : 'Contador: N/A';
+
+            const serialElement = document.getElementById(`number-series-${ip}`);
+if (serialElement) {
+    serialElement.textContent = data.serial ? `N° Série: ${data.serial}` : 'N° Série: N/A';
+}
+
+}
+
+        }
+
+        /**
+         * Retorna a cor apropriada para o status da impressora
+         */
+        function getStatusColor(status) {
+            const statusColors = {
+                'Imprimindo': 'white',
+                'Em Descanso': 'white',
+                'Aquecendo': 'white',
+                'Sem papel':'white',
+                'Obstrução de papel':'white',
+                'Sem toner':'white',
+                'Erro desconhecido': 'white'
+            };
+            return statusColors[status] || 'white';
+        }
+
+        /**
+         * Atualiza os níveis de toner para impressoras coloridas
+         */
+        function updateColorTonerLevels(ip, tonerLevels) {
+            ['black', 'cyan', 'magenta', 'yellow'].forEach((color, index) => {
+                const tonerElement = document.getElementById(`toner-${ip}-${color}`);
+                const percentage = tonerLevels[index] || 0;
+                tonerElement.textContent = `${percentage}%`;
+                updateTonerColorClass(tonerElement, percentage);
+            });
+        }
+
+        /**
+         * Atualiza o nível de toner para impressoras monocromáticas
+         */
+        function updateMonoTonerLevel(ip, percentage) {
+            const tonerElement = document.getElementById(`toner-${ip}`);
+            tonerElement.textContent = `${percentage}%`;
+            updateTonerColorClass(tonerElement, percentage);
+        }
+
+        /**
+         * Manipula erros de comunicação com a impressora
+         */
+        function handlePrinterError(ip) {
+            const buttonElement = document.getElementById(`button-${ip}`);
+            const statusElement = document.getElementById(`printer-status-${ip}`);
+            const impressora = impressoras.find(i => i.ip === ip);
+            if (!impressora) return;
+
+            if (statusElement) {
+                statusElement.textContent = 'Offline';
+                statusElement.style.color = '#ccc';
+            }
+
+            buttonElement.classList.add('offline');
+            updatePrinterStatus(ip, 'offline');
+
+            if (impressora.colorida) {
+                ['black', 'cyan', 'magenta', 'yellow'].forEach(color => {
+                    const tonerElement = document.getElementById(`toner-${ip}-${color}`);
+                    if (tonerElement) {
+                        tonerElement.textContent = 'OFF';
+                        tonerElement.classList.remove('high', 'medium', 'low');
+                    }
+                });
+            } else {
+                const tonerElement = document.getElementById(`toner-${ip}`);
+                if (tonerElement) {
+                    tonerElement.textContent = 'OFF';
+                    tonerElement.classList.remove('high', 'medium', 'low');
+                }
+            }
+        }
+
+        /**
+         * Atualiza o status visual do LED da impressora
+         */
+        function updatePrinterStatus(ip, status) {
+            const ledElement = document.getElementById(`led-${ip}`);
+            if (!ledElement) return;
+
+            ledElement.classList.remove('online', 'warning', 'offline', 'error');
+            
+            const statusColors = {
+                'Imprimindo': '#70FF24',
+                'Em Descanso': '#7eddfc',
+                'Aquecendo': '#FF8307',
+                'Sem papel':'#FF0202',
+                'Obstrução de papel':'#FF0202',
+                'Sem toner':'#FF0202',
+                'Erro desconhecido': '#FF0202',
+                'offline': '#cccccc'
+            };
+
+            ledElement.style.backgroundColor = statusColors[status] || '#999';
+        }
+
+        /**
+         * Atualiza a classe de cor do toner com base no percentual
+         */
+        function updateTonerColorClass(element, percentage) {
+            element.classList.remove('high', 'medium', 'low');
+            
+            if (percentage > 50) {
+                element.classList.add('high');
+            } else if (percentage >= 30) {
+                element.classList.add('medium');
+            } else {
+                element.classList.add('low');
+            }
+        }
+
+        /**
+         * Atualiza todos os status de toner
+         */
+        function updateAllTonerStatus() {
+            impressoras.forEach(impressora => {
+                updateTonerStatus(impressora.ip);
+            });
+        }
+
+        // Inicialização
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPrinters();
+            setInterval(updateAllTonerStatus, 10000);
+        });
+    </script>
+</body>
+</html>
