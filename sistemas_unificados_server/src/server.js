@@ -58,6 +58,7 @@ const SERIAL_OID = "1.3.6.1.2.1.43.5.1.1.17.1" // serial number da impressora
 const ERRORDETAIL_OID = "1.3.6.1.2.1.25.3.2.1.5.1" // Detalhe do erro
 const CONTER_OID = "1.3.6.1.2.1.43.10.2.1.4.1.1"; // Contador de páginas
 
+
 // =============== ROTAS DE INTERFACE WEB ===============
 /**
  * Helper para servir páginas HTML com tratamento de erros
@@ -95,7 +96,6 @@ function serveHtmlPage(route, fileName) {
 
 // Configuração das rotas da interface web
 serveHtmlPage('/dashboard', 'index.html');      // Dashboard principal
-serveHtmlPage('/gmp', 'cadastro.html');        // Cadastro de equipamentos
 serveHtmlPage('/gmp-consulta', 'consulta.html'); // Consulta de equipamentos
 serveHtmlPage('/cadastro-impressoras.html', 'cadastro-impressoras.html'); // Cadastro de impressoras
 
@@ -124,31 +124,31 @@ app.get('/tipos-equipamentos', async (req, res) => {
  * @param {string} nome - Nome do tipo de equipamento (obrigatório)
  * @return {Object} Tipo de equipamento criado
  */
-app.post('/tipos-equipamentos', async (req, res) => {
-  const { nome } = req.body;
+// app.post('/tipos-equipamentos', async (req, res) => {
+//   const { nome } = req.body;
 
-  // Validação simples
-  if (!nome) {
-    return res.status(400).json({
-      error: 'Dados inválidos',
-      message: 'Nome do tipo de equipamento é obrigatório'
-    });
-  }
+//   // Validação simples
+//   if (!nome) {
+//     return res.status(400).json({
+//       error: 'Dados inválidos',
+//       message: 'Nome do tipo de equipamento é obrigatório'
+//     });
+//   }
 
-  try {
-    const result = await pool.query(
-      'INSERT INTO tipos_equipamentos (nome) VALUES ($1) RETURNING *',
-      [nome]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error('Erro ao cadastrar tipo de equipamento:', err);
-    res.status(500).json({
-      error: 'Erro no servidor',
-      details: err.message
-    });
-  }
-});
+//   try {
+//     const result = await pool.query(
+//       'INSERT INTO tipos_equipamentos (nome) VALUES ($1) RETURNING *',
+//       [nome]
+//     );
+//     res.status(201).json(result.rows[0]);
+//   } catch (err) {
+//     console.error('Erro ao cadastrar tipo de equipamento:', err);
+//     res.status(500).json({
+//       error: 'Erro no servidor',
+//       details: err.message
+//     });
+//   }
+// });
 
 // =============== ROTAS API - EQUIPAMENTOS ===============
 /**
@@ -157,27 +157,27 @@ app.post('/tipos-equipamentos', async (req, res) => {
  * @param {number} id - ID do equipamento
  * @return {Object} Dados do equipamento
  */
-app.get('/equipamentos/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await pool.query('SELECT * FROM equipamentos WHERE id = $1', [id]);
+// app.get('/equipamentos/:id', async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const result = await pool.query('SELECT * FROM equipamentos WHERE id = $1', [id]);
     
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        error: 'Não encontrado',
-        message: 'Equipamento não encontrado'
-      });
-    }
+//     if (result.rows.length === 0) {
+//       return res.status(404).json({
+//         error: 'Não encontrado',
+//         message: 'Equipamento não encontrado'
+//       });
+//     }
     
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.error('Erro ao buscar equipamento:', err);
-    res.status(500).json({
-      error: 'Erro no servidor',
-      details: err.message
-    });
-  }
-});
+//     res.status(200).json(result.rows[0]);
+//   } catch (err) {
+//     console.error('Erro ao buscar equipamento:', err);
+//     res.status(500).json({
+//       error: 'Erro no servidor',
+//       details: err.message
+//     });
+//   }
+// });
 
 // =============== ROTAS API - IMPRESSORAS ===============
 /**
