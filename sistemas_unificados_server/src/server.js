@@ -20,8 +20,8 @@ const fs = require('fs'); // Para operações com sistema de arquivos
 
 // Configuração do servidor Express
 const app = express();
-const PORT = 3000;
-const HOST = '10.46.2.3'; // IP interno da rede SEPROR
+const PORT = 3001;
+const HOST = 'localhost'; 
 
 // Configuração de middlewares
 app.use(cors()); // Habilita CORS para todas as rotas
@@ -124,31 +124,7 @@ app.get('/tipos-equipamentos', async (req, res) => {
  * @param {string} nome - Nome do tipo de equipamento (obrigatório)
  * @return {Object} Tipo de equipamento criado
  */
-// app.post('/tipos-equipamentos', async (req, res) => {
-//   const { nome } = req.body;
 
-//   // Validação simples
-//   if (!nome) {
-//     return res.status(400).json({
-//       error: 'Dados inválidos',
-//       message: 'Nome do tipo de equipamento é obrigatório'
-//     });
-//   }
-
-//   try {
-//     const result = await pool.query(
-//       'INSERT INTO tipos_equipamentos (nome) VALUES ($1) RETURNING *',
-//       [nome]
-//     );
-//     res.status(201).json(result.rows[0]);
-//   } catch (err) {
-//     console.error('Erro ao cadastrar tipo de equipamento:', err);
-//     res.status(500).json({
-//       error: 'Erro no servidor',
-//       details: err.message
-//     });
-//   }
-// });
 
 // =============== ROTAS API - EQUIPAMENTOS ===============
 /**
@@ -157,27 +133,6 @@ app.get('/tipos-equipamentos', async (req, res) => {
  * @param {number} id - ID do equipamento
  * @return {Object} Dados do equipamento
  */
-// app.get('/equipamentos/:id', async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const result = await pool.query('SELECT * FROM equipamentos WHERE id = $1', [id]);
-    
-//     if (result.rows.length === 0) {
-//       return res.status(404).json({
-//         error: 'Não encontrado',
-//         message: 'Equipamento não encontrado'
-//       });
-//     }
-    
-//     res.status(200).json(result.rows[0]);
-//   } catch (err) {
-//     console.error('Erro ao buscar equipamento:', err);
-//     res.status(500).json({
-//       error: 'Erro no servidor',
-//       details: err.message
-//     });
-//   }
-// });
 
 // =============== ROTAS API - IMPRESSORAS ===============
 /**
@@ -327,7 +282,6 @@ async function getPrinterSerialNumber(ip) {
 }
 
 
-
 /**
  * GET /impressoras
  * Lista todas as impressoras cadastradas
@@ -404,13 +358,6 @@ app.post('/impressoras', async (req, res) => {
  * @return {Promise<string>} Status da impressora
  */
 
-// session.get([SERIAL_OID]), (error, varbinds) => {
-//       if (error) {
-//         session.close();
-//         console.error(`Erro ao consultar OID de erro (${ip}):`, error);
-//         return reject(error);
-//       }
-//     }
 
 async function getPrinterErrorStatus(ip) {
   return new Promise((resolve, reject) => {
@@ -542,7 +489,6 @@ async function getPrinterErrorStatus(ip) {
     });
   });
 }
-
 
 /**
  * Obtém os níveis de toner da impressora via SNMP
