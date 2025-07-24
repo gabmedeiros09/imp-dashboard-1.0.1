@@ -1,35 +1,37 @@
-/**
- * SERVIDOR DE GERENCIAMENTO DE IMPRESSORAS - SEPROR/GILOG
- * 
- * Este sistema fornece:
- * - Monitoramento em tempo real de impressoras via SNMP
- * - Gerenciamento de cadastro de equipamentos
- * - API REST para integração com frontend web
- * - Geração de relatórios
- */
+const express = require('express');
+const snmp = require('net-snmp');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const { Pool } = require('pg');
+const path = require('path');
+const ExcelJS = require('exceljs');
+const fs = require('fs');
 
 // =============== CONFIGURAÇÃO INICIAL ===============
-const express = require('express');
-const snmp = require('net-snmp'); // Para comunicação SNMP com impressoras
-const cors = require('cors'); // Middleware para habilitar CORS
-const bodyParser = require('body-parser'); // Para parsing de requisições JSON
-const { Pool } = require('pg'); // Cliente PostgreSQL para conexão com banco
-const path = require('path'); // Para manipulação de caminhos de arquivos
-const ExcelJS = require('exceljs'); // Para geração de relatórios em Excel
-const fs = require('fs'); // Para operações com sistema de arquivos
+const configPath = path.join(__dirname, 'config.json');
+let config = {
+  host: 'localhost',
+  port: 3000,
+  defaultHost: 'localhost',
+  defaultPort: 3000
+};
 
-// Configuração do servidor Express
+try {
+  config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+} catch (err) {
+  console.log('Usando configurações padrão');
+  fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+}
+
 const app = express();
-const PORT = 3001;
-const HOST = 'localhost'; 
 
-// Configuração de middlewares
-app.use(cors()); // Habilita CORS para todas as rotas
-app.use(bodyParser.json()); // Habilita parsing de JSON no body das requisições
-app.use(express.static(__dirname)); // Serve arquivos estáticos
-app.use('/src', express.static(path.join(__dirname, 'src'))); // Pasta de assets
+// Middlewares
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static(__dirname));
+app.use('/src', express.static(path.join(__dirname, 'src')));
 
-// Configuração do pool de conexões PostgreSQL
+// Configuração do PostgreSQL
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
@@ -39,37 +41,33 @@ const pool = new Pool({
 });
 
 // =============== CONSTANTES SNMP ===============
-/**
- * OIDs (Object Identifiers) padrão para monitoramento de impressoras:
- */
 const TONER_OIDS = {
-  black: "1.3.6.1.2.1.43.11.1.1.9.1.1",  // Toner preto
-  cyan: "1.3.6.1.2.1.43.11.1.1.9.1.2",   // Toner ciano
-  magenta: "1.3.6.1.2.1.43.11.1.1.9.1.3",// Toner magenta
-  yellow: "1.3.6.1.2.1.43.11.1.1.9.1.4"   // Toner amarelo
+  black: "1.3.6.1.2.1.43.11.1.1.9.1.1",
+  cyan: "1.3.6.1.2.1.43.11.1.1.9.1.2",
+  magenta: "1.3.6.1.2.1.43.11.1.1.9.1.3",
+  yellow: "1.3.6.1.2.1.43.11.1.1.9.1.4"
 };
 
-const ERROR_OID = "1.3.6.1.2.1.25.3.5.1.1.1"; // Status da impressora
-const LIFE_TAMBOR_OID = "1.3.6.1.2.1.43.11.1.1.9.1.2"; // Vida do tambor
-const MAX_TAMBOR_OID = "1.3.6.1.2.1.43.11.1.1.8.1.2"; // Vida maxima do tambor
-const HOSTNAME_OID = "1.3.6.1.2.1.1.5.0"; // Nome do host
-const MODEL_OID = "1.3.6.1.2.1.43.5.1.1.17.1" // modelo de teste da impressora
-const SERIAL_OID = "1.3.6.1.2.1.43.5.1.1.17.1" // serial number da impressora
-const ERRORDETAIL_OID = "1.3.6.1.2.1.25.3.2.1.5.1" // Detalhe do erro
-const CONTER_OID = "1.3.6.1.2.1.43.10.2.1.4.1.1"; // Contador de páginas
-
+const ERROR_OID = "1.3.6.1.2.1.25.3.5.1.1.1";
+const ERRORDETAIL_OID1_MONO = "1.3.6.1.2.1.43.18.1.1.8.1.1";
+const ERRORDETAIL_OID2_MONO = "1.3.6.1.2.1.43.18.1.1.8.1.2";
+const ERRORDETAIL_OID3_MONO = "1.3.6.1.2.1.43.18.1.1.8.1.3";
+const ERRORDETAIL_OID1_COLOR = "1.3.6.1.2.1.43.18.1.1.8.1.135";
+const ERRORDETAIL_OID2_COLOR = "1.3.6.1.2.1.43.18.1.1.8.1.136";
+const ERRORDETAIL_OID3_COLOR = "1.3.6.1.2.1.43.18.1.1.8.1.137";
+const LIFE_TAMBOR_OID = "1.3.6.1.2.1.43.11.1.1.9.1.2";
+const MAX_TAMBOR_OID = "1.3.6.1.2.1.43.11.1.1.8.1.2";
+const HOSTNAME_OID = "1.3.6.1.2.1.1.5.0";
+const MODEL_OID = "1.3.6.1.2.1.43.5.1.1.17.1";
+const SERIAL_OID = "1.3.6.1.2.1.43.5.1.1.17.1";
+const ERRORDETAIL_OID = "1.3.6.1.2.1.25.3.2.1.5.1";
+const CONTER_OID = "1.3.6.1.2.1.43.10.2.1.4.1.1";
 
 // =============== ROTAS DE INTERFACE WEB ===============
-/**
- * Helper para servir páginas HTML com tratamento de erros
- * @param {string} route - Rota da URL (ex: '/dashboard')
- * @param {string} fileName - Nome do arquivo HTML (ex: 'index.html')
- */
 function serveHtmlPage(route, fileName) {
   app.get(route, (req, res) => {
     const filePath = path.join(__dirname, fileName);
     
-    // Verifica se arquivo existe
     fs.access(filePath, fs.constants.F_OK, (err) => {
       if (err) {
         console.error(`Arquivo ${fileName} não encontrado:`, err);
@@ -80,7 +78,6 @@ function serveHtmlPage(route, fileName) {
         });
       }
       
-      // Envia o arquivo se existir
       res.sendFile(filePath, (err) => {
         if (err) {
           console.error(`Erro ao enviar ${fileName}:`, err);
@@ -94,58 +91,47 @@ function serveHtmlPage(route, fileName) {
   });
 }
 
-// Configuração das rotas da interface web
-serveHtmlPage('/dashboard', 'index.html');      // Dashboard principal
-serveHtmlPage('/gmp-consulta', 'consulta.html'); // Consulta de equipamentos
-serveHtmlPage('/cadastro-impressoras.html', 'cadastro-impressoras.html'); // Cadastro de impressoras
+serveHtmlPage('/dashboard', 'index.html');
+serveHtmlPage('/gmp-consulta', 'consulta.html');
+serveHtmlPage('/cadastro-impressoras.html', 'cadastro-impressoras.html');
+serveHtmlPage('/config', 'config.html');
 
-// =============== ROTAS API - TIPOS DE EQUIPAMENTOS ===============
-/**
- * GET /tipos-equipamentos
- * Retorna todos os tipos de equipamentos cadastrados
- * @return {Array} Lista de tipos de equipamentos
- */
-app.get('/tipos-equipamentos', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM tipos_equipamentos ORDER BY nome');
-    res.status(200).json(result.rows);
-  } catch (err) {
-    console.error('Erro ao buscar tipos de equipamentos:', err);
-    res.status(500).json({
-      error: 'Erro no servidor',
-      details: err.message
-    });
+// =============== ROTAS API - CONFIGURAÇÕES ===============
+app.post('/api/config', express.json(), (req, res) => {
+  const { host, port } = req.body;
+  
+  if (!host || !port) {
+    return res.status(400).json({ error: 'Host e porta são obrigatórios' });
   }
+
+  const newConfig = {
+    ...config,
+    host,
+    port: parseInt(port)
+  };
+
+  fs.writeFile(configPath, JSON.stringify(newConfig, null, 2), (err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erro ao salvar configurações' });
+    }
+    
+    config = newConfig;
+    res.json({ 
+      success: true,
+      message: 'Configurações atualizadas. Reinicie o servidor para aplicar as mudanças.'
+    });
+  });
 });
 
-/**
- * POST /tipos-equipamentos
- * Cria um novo tipo de equipamento
- * @param {string} nome - Nome do tipo de equipamento (obrigatório)
- * @return {Object} Tipo de equipamento criado
- */
-
-
-// =============== ROTAS API - EQUIPAMENTOS ===============
-/**
- * GET /equipamentos/:id
- * Retorna um equipamento específico
- * @param {number} id - ID do equipamento
- * @return {Object} Dados do equipamento
- */
+app.get('/api/config', (req, res) => {
+  res.json(config);
+});
 
 // =============== ROTAS API - IMPRESSORAS ===============
-/**
- * DELETE /impressoras/:id
- * Remove uma impressora do sistema
- * @param {number} id - ID da impressora
- * @return {Object} Confirmação da exclusão
- */
 app.delete('/impressoras/:id', async (req, res) => {
   try {
     const { id } = req.params;
     
-    // Verifica se impressora existe
     const checkResult = await pool.query(
       'SELECT id FROM impressoras WHERE id = $1', 
       [id]
@@ -158,11 +144,7 @@ app.delete('/impressoras/:id', async (req, res) => {
       });
     }
 
-    // Remove a impressora
-    await pool.query(
-      'DELETE FROM impressoras WHERE id = $1',
-      [id]
-    );
+    await pool.query('DELETE FROM impressoras WHERE id = $1', [id]);
     
     res.status(200).json({ 
       success: true,
@@ -179,17 +161,10 @@ app.delete('/impressoras/:id', async (req, res) => {
   }
 });
 
-/**
- * GET /toner/:ip
- * Consulta os níveis de toner e status de uma impressora
- * @param {string} ip - Endereço IP da impressora
- * @return {Object} Dados da impressora e níveis de toner
- */
 app.get('/toner/:ip', async (req, res) => {
   try {
     const { ip } = req.params;
 
-    // Busca dados da impressora no banco
     const printerResult = await pool.query(
       'SELECT * FROM impressoras WHERE ip = $1', 
       [ip]
@@ -202,33 +177,40 @@ app.get('/toner/:ip', async (req, res) => {
       });
     }
 
-    // Obtém níveis de toner via SNMP
+    const isColor = printerResult.rows[0].colorida;
     const tonerLevels = await getTonerLevel(ip);
+    const drumCurrent = await getDrumCurrentLife(ip);
+    const drumMax = await getDrumMaxLife(ip);
+    const drumPercent = drumCurrent && drumMax ? Math.round((drumCurrent / drumMax) * 100) : null;
 
-    // Obtém status da impressora
     let errorStatus = null;
+    let errorDetails = ["N/A", "N/A", "N/A"];
+    
     try {
       errorStatus = await getPrinterErrorStatus(ip);
-      
+      errorDetails = await getPrinterErrorDetails(ip, isColor);
     } catch (error) {
       console.error(`[PRINTER ERROR] Falha ao verificar erro da impressora ${ip}:`, error.message);
     }
 
     const counterPages = await getPrinterPageCount(ip);
-    const serialNum = await getPrinterSerialNumber(ip)
+    const serialNum = await getPrinterSerialNumber(ip);
 
-
-    // Retorna todos os dados
     res.json({
-  printer: printerResult.rows[0].nome,
-  ip,
-  toner: tonerLevels,
-  isColor: printerResult.rows[0].colorida,
-  status: errorStatus,
-  counter: counterPages,
-  serial: serialNum
-});
-
+      printer: printerResult.rows[0].nome,
+      ip,
+      toner: tonerLevels,
+      isColor,
+      status: errorStatus,
+      errorDetails: errorDetails,
+      counter: counterPages,
+      serial: serialNum,
+      drum: {
+        current: drumCurrent,
+        max: drumMax,
+        percent: drumPercent
+      }
+    });
 
   } catch (error) {
     res.status(500).json({
@@ -239,6 +221,60 @@ app.get('/toner/:ip', async (req, res) => {
   }
 });
 
+app.get('/impressoras', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM impressoras ORDER BY nome');
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error('Erro ao buscar impressoras:', err);
+    res.status(500).json({
+      error: 'Erro no servidor',
+      details: err.message
+    });
+  }
+});
+
+app.post('/impressoras', async (req, res) => {
+  const { nome, ip, colorida } = req.body;
+
+  if (!nome || !ip) {
+    return res.status(400).json({
+      error: 'Dados inválidos',
+      message: 'Nome e IP são obrigatórios',
+      required: ['nome', 'ip']
+    });
+  }
+
+  try {
+    const ipExists = await pool.query(
+      'SELECT id FROM impressoras WHERE ip = $1',
+      [ip]
+    );
+    
+    if (ipExists.rows.length > 0) {
+      return res.status(409).json({
+        error: 'Conflito',
+        message: 'Já existe uma impressora com este IP'
+      });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO impressoras (nome, ip, colorida) 
+       VALUES ($1, $2, $3) RETURNING *`,
+      [nome, ip, colorida || false]
+    );
+    
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Erro ao cadastrar impressora:', err);
+    res.status(500).json({
+      error: 'Erro no servidor',
+      details: err.message
+    });
+  }
+});
+
+// =============== FUNÇÕES AUXILIARES ===============
 async function getPrinterPageCount(ip) {
   return new Promise((resolve, reject) => {
     const session = snmp.createSession(ip, "public", {
@@ -281,92 +317,12 @@ async function getPrinterSerialNumber(ip) {
   });
 }
 
-
-/**
- * GET /impressoras
- * Lista todas as impressoras cadastradas
- * @return {Array} Lista de impressoras
- */
-app.get('/impressoras', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM impressoras ORDER BY nome');
-    res.status(200).json(result.rows);
-  } catch (err) {
-    console.error('Erro ao buscar impressoras:', err);
-    res.status(500).json({
-      error: 'Erro no servidor',
-      details: err.message
-    });
-  }
-});
-
-/**
- * POST /impressoras
- * Cadastra uma nova impressora
- * @param {string} nome - Nome da impressora
- * @param {string} ip - Endereço IP
- * @param {boolean} colorida - Se é colorida (opcional)
- * @return {Object} Dados da impressora cadastrada
- */
-app.post('/impressoras', async (req, res) => {
-  const { nome, ip, colorida } = req.body;
-
-  // Validação dos campos obrigatórios
-  if (!nome || !ip) {
-    return res.status(400).json({
-      error: 'Dados inválidos',
-      message: 'Nome e IP são obrigatórios',
-      required: ['nome', 'ip']
-    });
-  }
-
-  try {
-    // Verifica se IP já existe
-    const ipExists = await pool.query(
-      'SELECT id FROM impressoras WHERE ip = $1',
-      [ip]
-    );
-    
-    if (ipExists.rows.length > 0) {
-      return res.status(409).json({
-        error: 'Conflito',
-        message: 'Já existe uma impressora com este IP'
-      });
-    }
-
-    // Insere nova impressora
-    const result = await pool.query(
-      `INSERT INTO impressoras (nome, ip, colorida) 
-       VALUES ($1, $2, $3) RETURNING *`,
-      [nome, ip, colorida || false]
-    );
-    
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error('Erro ao cadastrar impressora:', err);
-    res.status(500).json({
-      error: 'Erro no servidor',
-      details: err.message
-    });
-  }
-});
-
-// =============== FUNÇÕES AUXILIARES ===============
-/**
- * Obtém o status de erro da impressora via SNMP
- * @param {string} ip - Endereço IP da impressora
- * @return {Promise<string>} Status da impressora
- */
-
-
 async function getPrinterErrorStatus(ip) {
   return new Promise((resolve, reject) => {
     const session = snmp.createSession(ip, "public", {
       timeout: 3000,
       retries: 1
     });
-
-    
 
     session.get([ERROR_OID], (error, varbinds) => {
       if (error) {
@@ -375,11 +331,9 @@ async function getPrinterErrorStatus(ip) {
         return reject(error);
       }
 
-            let errorValue = varbinds[0].value.toString();
+      let errorValue = varbinds[0].value.toString();
 
-      // Se errorValue for "1", buscar detalhe
       if (errorValue === "1") {
-        // Nova consulta para ERRORDETAIL_OID
         session.get([ERRORDETAIL_OID], (detailError, detailVarbinds) => {
           session.close();
 
@@ -390,17 +344,10 @@ async function getPrinterErrorStatus(ip) {
 
           const detailCode = parseInt(detailVarbinds[0].value.toString(), 10);
           switch (detailCode) {
-            case 3:
-              errorValue = "Sem papel";
-              break;
-            case 4:
-              errorValue = "Obstrução de papel";
-              break;
-            case 5:
-              errorValue = "Sem toner";
-              break;
-            default:
-              errorValue = "Erro desconhecido";
+            case 3: errorValue = "Sem papel"; break;
+            case 4: errorValue = "Obstrução de papel"; break;
+            case 5: errorValue = "Sem toner"; break;
+            default: errorValue = "Erro desconhecido";
           }
 
           resolve(errorValue);
@@ -408,97 +355,97 @@ async function getPrinterErrorStatus(ip) {
       } else {
         session.close();
 
-        // Mapeamento padrão
-        if (errorValue === "3") {
-          errorValue = "Em Descanso";
-        } else if (errorValue === "4") {
-          errorValue = "Imprimindo";
-        } else if (errorValue === "5") {
-          errorValue = "Aquecendo";
-        } else {
-          errorValue = "Status desconhecido";
-        }
+        if (errorValue === "3") errorValue = "Em Descanso";
+        else if (errorValue === "4") errorValue = "Imprimindo";
+        else if (errorValue === "5") errorValue = "Aquecendo";
+        else errorValue = "Status desconhecido";
 
         resolve(errorValue);
       }
     });
   });
 }
-async function getPrinterErrorStatus(ip) {
+
+async function getPrinterErrorDetails(ip, isColor) {
+  const errorDetails = ["N/A", "N/A", "N/A"];
+  const oids = isColor ? [
+    ERRORDETAIL_OID1_COLOR,
+    ERRORDETAIL_OID2_COLOR,
+    ERRORDETAIL_OID3_COLOR
+  ] : [
+    ERRORDETAIL_OID1_MONO,
+    ERRORDETAIL_OID2_MONO,
+    ERRORDETAIL_OID3_MONO
+  ];
+
+  try {
+    errorDetails[0] = (await snmpGetSingle(ip, oids[0])) || "N/A";
+    errorDetails[1] = (await snmpGetSingle(ip, oids[1])) || "N/A";
+    errorDetails[2] = (await snmpGetSingle(ip, oids[2])) || "N/A";
+  } catch (e) {
+    
+  }
+
+  return errorDetails;
+}
+
+function snmpGetSingle(ip, oid) {
   return new Promise((resolve, reject) => {
     const session = snmp.createSession(ip, "public", {
       timeout: 3000,
       retries: 1
     });
 
-    
-
-    session.get([ERROR_OID], (error, varbinds) => {
-      if (error) {
-        session.close();
-        console.error(`Erro ao consultar OID de erro (${ip}):`, error);
-        return reject(error);
-      }
-
-            let errorValue = varbinds[0].value.toString();
-
-      // Se errorValue for "1", buscar detalhe
-      if (errorValue === "1") {
-        // Nova consulta para ERRORDETAIL_OID
-        session.get([ERRORDETAIL_OID], (detailError, detailVarbinds) => {
-          session.close();
-
-          if (detailError) {
-            console.error(`Erro ao consultar ERRORDETAIL_OID (${ip}):`, detailError);
-            return resolve("Erro desconhecido");
-          }
-
-          const detailCode = parseInt(detailVarbinds[0].value.toString(), 10);
-          switch (detailCode) {
-            case 3:
-              errorValue = "Sem papel";
-              break;
-            case 4:
-              errorValue = "Obstrução de papel";
-              break;
-            case 5:
-              errorValue = "Sem toner";
-              break;
-            default:
-              errorValue = "Erro desconhecido";
-          }
-
-          resolve(errorValue);
-        });
-      } else {
-        session.close();
-
-        // Mapeamento padrão
-        if (errorValue === "3") {
-          errorValue = "Em Descanso";
-        } else if (errorValue === "4") {
-          errorValue = "Imprimindo";
-        } else if (errorValue === "5") {
-          errorValue = "Aquecendo";
-        } else {
-          errorValue = "Status desconhecido";
-        }
-
-        resolve(errorValue);
-      }
+    session.get([oid], (error, varbinds) => {
+      session.close();
+      if (error) return reject(error);
+      const value = varbinds[0].value.toString().trim();
+      resolve(value === "" ? "Nenhum erro" : value);
     });
   });
 }
 
-/**
- * Obtém os níveis de toner da impressora via SNMP
- * @param {string} ip - Endereço IP da impressora
- * @return {Promise<Array>} Array com porcentagens de toner [black, cyan, magenta, yellow]
- */
+async function getDrumCurrentLife(ip) {
+  return new Promise((resolve, reject) => {
+    const session = snmp.createSession(ip, "public", {
+      timeout: 3000,
+      retries: 1
+    });
+
+    session.get([LIFE_TAMBOR_OID], (error, varbinds) => {
+      session.close();
+      if (error) {
+        console.error(`Erro ao obter vida do tambor ${ip}:`, error.message);
+        return resolve(null);
+      }
+      const life = parseInt(varbinds[0].value.toString(), 10);
+      resolve(isNaN(life) ? null : life);
+    });
+  });
+}
+
+async function getDrumMaxLife(ip) {
+  return new Promise((resolve, reject) => {
+    const session = snmp.createSession(ip, "public", {
+      timeout: 3000,
+      retries: 1
+    });
+
+    session.get([MAX_TAMBOR_OID], (error, varbinds) => {
+      session.close();
+      if (error) {
+        console.error(`Erro ao obter vida máxima do tambor ${ip}:`, error.message);
+        return resolve(null);
+      }
+      const maxLife = parseInt(varbinds[0].value.toString(), 10);
+      resolve(isNaN(maxLife) ? null : maxLife);
+    });
+  });
+}
+
 async function getTonerLevel(ip) {
   return new Promise(async (resolve, reject) => {
     try {
-      // Verifica no banco se a impressora é colorida
       const printerInfo = await pool.query(
         'SELECT colorida FROM impressoras WHERE ip = $1', 
         [ip]
@@ -509,14 +456,11 @@ async function getTonerLevel(ip) {
       }
 
       const isColor = printerInfo.rows[0].colorida;
-      
-      // Cria sessão SNMP
       const session = snmp.createSession(ip, "public", {
         timeout: 3000,
         retries: 1
       });
 
-      // Define quais OIDs serão consultados
       const oids = [
         TONER_OIDS.black,        
         TONER_OIDS.cyan, 
@@ -524,38 +468,23 @@ async function getTonerLevel(ip) {
         TONER_OIDS.yellow
       ];
 
-      // Executa consulta SNMP
       session.get(oids, (error, varbinds) => {
         session.close();
-        
-        if (error) {
-          return reject(error);
-        }
+        if (error) return reject(error);
 
-        // Processa os valores retornados
         const levels = varbinds.map((vb, index) => {
           const value = parseInt(vb.value.toString(), 10);
-          
-          // Define capacidade máxima baseada no tipo de impressora e cor
           let maxCapacity;
           
           if (isColor) {
-            // Valores específicos para impressoras coloridas
-            if (index === 1) { // magenta
-              maxCapacity = 3500;
-            } else if (index === 0) { // ciano
-              maxCapacity = 3500;
-            } else if (index === 2) { // amarelo
-              maxCapacity = 3500;
-            } else if (index === 3) { // preto
-              maxCapacity = 6000;
-            }
+            if (index === 1) maxCapacity = 3500;
+            else if (index === 0) maxCapacity = 3500;
+            else if (index === 2) maxCapacity = 3500;
+            else if (index === 3) maxCapacity = 6000;
           } else {
-            // Impressora monocromática
             maxCapacity = 15000;
           }
           
-          // Calcula porcentagem (limitada entre 0 e 100)
           return Math.min(100, Math.max(0, Math.round((value / maxCapacity) * 100)));
         });
 
@@ -568,52 +497,23 @@ async function getTonerLevel(ip) {
 }
 
 // =============== INICIALIZAÇÃO DO SERVIDOR ===============
-// Lista de arquivos essenciais que devem existir
 const requiredFiles = [
   'index.html',
   'cadastro.html',
   'consulta.html',
-  'cadastro-impressoras.html'
+  'cadastro-impressoras.html',
+  'config.html'
 ];
 
-// Verifica se todos os arquivos essenciais existem
 requiredFiles.forEach(file => {
   const filePath = path.join(__dirname, file);
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
       console.error(`Arquivo essencial não encontrado: ${file}`);
-    } else {
-      console.log(`Arquivo ${file} encontrado`);
     }
   });
 });
 
-console.log("\nTestando consulta SNMP para obter modelo da impressora...");
-
-const testIP = "10.46.6.11"; // IP fixo para teste
-const session = snmp.createSession(testIP, "public", {
-  timeout: 3000,
-  retries: 1
+app.listen(config.port, config.host, () => {
+  console.log(`Servidor rodando em http://${config.host}:${config.port}`);
 });
-
-session.get([MODEL_OID], (error, varbinds) => {
-  session.close();
-  
-  if (error) {
-    console.error(`Falha ao consultar modelo da impressora ${testIP}:`, error);
-    return;
-  }
-  
-  const model = varbinds[0].value.toString();
-  console.log(`\n
-  RESULTADO DO TESTE:
-  IP: ${testIP}
-  Modelo: ${model}
-  OID: ${MODEL_OID}\n`);
-});
-
-// Inicia o servidor
-app.listen(PORT, HOST, () => {
-  console.log(`Servidor rodando em http://${HOST}:${PORT}`);
-});
-

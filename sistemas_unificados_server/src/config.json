@@ -1,0 +1,6 @@
+{
+  "host": "localhost",
+  "port": 3000,
+  "defaultHost": "localhost",
+  "defaultPort": 3000
+}

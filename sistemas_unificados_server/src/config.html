@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações do Servidor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0px;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        header .logo-left {
+            width: 140px;
+        }
+
+        header .logo-right {
+            width: 100px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        button {
+            flex: 1;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        #save-btn {
+            background-color: #033c6b;
+        }
+        #save-btn:hover {
+            background-color: #002b4d;
+        }
+        #reset-btn {
+            background-color: #6c757d;
+        }
+        #reset-btn:hover {
+            background-color: #5a6268;
+        }
+        .current-config {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9f5ff;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/src/LOGO_GOV.png" alt="Logo Governo" class="logo-left">
+        <h1>Gerenciador de Impressoras (SEPROR)</h1>
+        <div>
+            <a href="/cadastro-impressoras.html" target="_blank" style="color: white; margin-right: 20px; text-decoration: none;">Cadastrar Impressoras</a>
+            <img src="src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
+        </div>
+    </header>
+    <div class="container">
+        <h1>Configurações do Servidor</h1>
+        
+        <div class="current-config">
+            <h3>Configuração Atual:</h3>
+            <p><strong>Host:</strong> <span id="current-host">Carregando...</span></p>
+            <p><strong>Porta:</strong> <span id="current-port">Carregando...</span></p>
+        </div>
+        
+        <div class="form-group">
+            <label for="host">Novo Host (IP):</label>
+            <input type="text" id="host" placeholder="Ex: 10.46.2.3">
+        </div>
+        
+        <div class="form-group">
+            <label for="port">Nova Porta:</label>
+            <input type="number" id="port" placeholder="Ex: 3000">
+        </div>
+        
+        <div class="button-group">
+            <button id="save-btn">Salvar Configurações</button>
+            <button id="reset-btn">Restaurar Padrões</button>
+        </div>
+        
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carrega configurações atuais
+            loadCurrentConfig();
+
+            // Configura botão de salvar
+            document.getElementById('save-btn').addEventListener('click', () => {
+                const host = document.getElementById('host').value.trim();
+                const port = document.getElementById('port').value.trim();
+                
+                if (!host || !port) {
+                    showMessage('Preencha todos os campos', 'error');
+                    return;
+                }
+
+                saveConfig(host, port);
+            });
+
+            // Configura botão de restaurar padrões
+            document.getElementById('reset-btn').addEventListener('click', () => {
+                if(confirm('Tem certeza que deseja restaurar as configurações padrões?')) {
+                    const host = "localhost"
+                    const port = "3000"
+                    saveConfig(host, port)
+                }
+            });
+
+            function loadCurrentConfig() {
+                fetch('/api/config')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('current-host').textContent = data.host;
+                        document.getElementById('current-port').textContent = data.port;
+                        document.getElementById('host').value = data.host;
+                        document.getElementById('port').value = data.port;
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar configurações:', error);
+                        showMessage('Erro ao carregar configurações atuais', 'error');
+                    });
+            }
+
+            function saveConfig(host, port) {
+                fetch('/api/config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ host, port })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage(data.message, 'success');
+                        // Atualiza exibição das configurações atuais
+                        document.getElementById('current-host').textContent = host;
+                        document.getElementById('current-port').textContent = port;
+                    } else {
+                        showMessage(data.error || 'Erro ao salvar configurações', 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage('Erro ao conectar com o servidor', 'error');
+                    console.error('Erro:', error);
+                });
+            }
+
+           
+
+            function showMessage(text, type) {
+                const messageEl = document.getElementById('message');
+                messageEl.textContent = text;
+                messageEl.className = `message ${type}`;
+                
+                // Limpa mensagem após 5 segundos
+                setTimeout(() => {
+                    messageEl.className = 'message';
+                    messageEl.textContent = '';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -2,8 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Manrope">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Manrope">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciador de Impressoras (GILOG)</title>
     <meta http-equiv="refresh" content="600">
@@ -57,13 +56,11 @@
             color: inherit;
         }
 
-         .container .number_series{
+        .container .number_series {
             display: flex;
-            font-family: 'Manrope', serif; 
-            /* -webkit-text-stroke-width: 0.05px; largura da borda */
-            /* -webkit-text-stroke-color: #000; cor da borda */           
+            font-family: 'Manrope', serif;      
             font-weight: 800;
-            font-size:11px;
+            font-size: 11px;
             justify-content: center;
             align-items: center;
             padding: 0 0 0 20px;          
@@ -120,9 +117,9 @@
         }
 
         .printer-status {
-           font-size: 13px; 
-           color: white; 
-           margin-top: 0px; 
+            font-size: 13px; 
+            color: white; 
+            margin-top: 0px; 
         }
 
         .status-indicator {
@@ -257,6 +254,240 @@
             margin: 0.1px 0.5px;
         }
 
+        /* Modal styles atualizados */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: #f8f9fa;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 700px;
+            font-family: 'Manrope', sans-serif;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+            border: 1px solid #e0e0e0;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        
+.drum-progress {
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.drum-progress-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    height: 20px;
+}
+
+.drum-progress-bar {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.3s;
+}
+
+.drum-progress-high {
+    background-color: #4CAF50; /* Verde */
+}
+
+.drum-progress-medium {
+    background-color: #FFC107; /* Amarelo */
+}
+
+.drum-progress-low {
+    background-color: #F44336; /* Vermelho */
+}
+
+        .close-button {
+            color: #7f8c8d;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-button:hover {
+            color: #34495e;
+        }
+
+        .modal-body {
+            color: #34495e;
+            line-height: 1.6;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .info-label {
+            font-weight: 600;
+            width: 120px;
+            color: #2c3e50;
+        }
+
+        .info-value {
+            flex: 1;
+        }
+
+        .web-service-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .web-service-link:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .error-section {
+            background-color: #fef5f5;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 25px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .error-section.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .error-title {
+            color: #e74c3c;
+            font-size: 18px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-icon {
+            font-size: 20px;
+        }
+
+        .error-item {
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #f1c40f;
+        }
+
+        .error-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-indicator-modal {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-online {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-warning {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+
+        .status-offline {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .status-unknown {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .toner-display {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .toner-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+        }
+
+        .toner-color-modal {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .toner-value-modal {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .toner-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 3px;
+        }
+
         @media (max-width: 768px) {
             .button {
                 width: 160px;
@@ -269,6 +500,10 @@
             }
             .toner {
                 font-size: 10px;
+            }
+            .modal-content {
+                width: 90%;
+                padding: 20px;
             }
         }
 
@@ -290,6 +525,18 @@
                 font-size: 1.2rem;
                 margin: 10px 0;
             }
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .info-label {
+                width: auto;
+                margin-bottom: 5px;
+            }
         }
     </style>
 </head>
@@ -299,22 +546,33 @@
         <img src="/src/LOGO_GOV.png" alt="Logo Governo" class="logo-left">
         <h1>Gerenciador de Impressoras (SEPROR)</h1>
         <div>
-            <a href="/cadastro-impressoras.html" style="color: white; margin-right: 20px; text-decoration: none;">Cadastrar Impressoras</a>
+            <a href="/config.html" target="_blank" style="color: white; margin-right: 20px; text-decoration: none;">Configurações</a>
+            <a href="/cadastro-impressoras.html" target="_blank" style="color: white; margin-right: 20px; text-decoration: none;">Cadastrar Impressoras</a>
             <img src="src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
         </div>
     </header>
 
     <div class="container">
         <!-- Os botões das impressoras serão gerados dinamicamente pelo JavaScript -->
-         
-     
     </div>
    
-
     <footer>
         <img src="src/LINHA.PNG" alt="Linha divisória" class="divider">
         <p>&copy; 2025 - Secretária de Estado de Produção Rural - SEPROR. Desenvolvido por Renato Pedrozo (GILOG) em colaboração com ...</p>
     </footer>
+
+    <!-- Modal -->
+    <div id="printerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Detalhes da Impressora</h2>
+                <span class="close-button" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <p>Carregando informações...</p>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Configurações iniciais
@@ -322,6 +580,9 @@
             e.preventDefault();
         });
 
+        // Variável para armazenar a URL base da API
+        let apiBaseUrl = '';
+        
         // Dados das impressoras
         const PRINTERS = {
             "10.46.6.1": "IMP_GAB",
@@ -344,11 +605,32 @@
         let impressoras = [];
 
         /**
+         * Carrega as configurações do servidor
+         */
+        async function loadConfig() {
+            try {
+                const response = await fetch('/api/config');
+                if (!response.ok) throw new Error('Erro ao carregar configurações');
+                
+                const config = await response.json();
+                apiBaseUrl = `http://${config.host}:${config.port}`;
+                return true;
+            } catch (error) {
+                console.error('Usando configuração padrão:', error);
+                apiBaseUrl = 'http://localhost:3000'; // Fallback
+                return false;
+            }
+        }
+
+        /**
          * Carrega as impressoras do servidor ou usa fallback
          */
         async function loadPrinters() {
+            // Primeiro carrega as configurações
+            await loadConfig();
+            
             try {
-                const response = await fetch('http://10.46.2.3:3000/impressoras');
+                const response = await fetch(`${apiBaseUrl}/impressoras`);
                 if (!response.ok) throw new Error('Erro ao carregar impressoras');
                 
                 impressoras = await response.json();
@@ -356,6 +638,7 @@
                 createPrinterButtons();
                 updateAllTonerStatus();
             } catch (error) {
+                console.error('Usando impressoras fallback:', error);
                 useFallbackPrinters();
             }
         }
@@ -392,9 +675,9 @@
             const container = document.querySelector('.container');
             container.innerHTML = '';
 
-            impressoras.forEach((impressora, index) => {
+            impressoras.forEach((impressora) => {
                 const buttonHtml = `
-                    <a href="http://${impressora.ip}/sws/index.html" target="_blank">
+                    <a href="#" onclick="openModal('${impressora.ip}', '${impressora.nome}', event)">
                         <button class="button" id="button-${impressora.ip}">
                             <div class="button-header">
                                 <span class="printer-number" id="counter-${impressora.ip}">Contador: ...</span>
@@ -409,10 +692,8 @@
                            
                             ${getTonerHTML(impressora)}
                         </button>
-                        <span class= "number_series" id="number-series-${impressora.ip}"> N° Série:... </span>
+                        <span class="number_series" id="number-series-${impressora.ip}"> N° Série:... </span>
                     </a>
-                     
-
                 `;
                 container.insertAdjacentHTML('beforeend', buttonHtml);
             });
@@ -453,7 +734,7 @@
          */
         async function updateTonerStatus(ip) {
             try {
-                const response = await fetch(`http://10.46.2.3:3000/toner/${ip}`);
+                const response = await fetch(`${apiBaseUrl}/toner/${ip}`);
                 if (!response.ok) throw new Error('Impressora não respondeu');
 
                 const data = await response.json();
@@ -489,17 +770,17 @@
 
             const counterElement = document.getElementById(`counter-${ip}`);
             if (counterElement) {
-            counterElement.textContent = data.counter !== null 
-            ? `Contador: ${data.counter}` 
-            : 'Contador: N/A';
+                counterElement.textContent = data.counter !== null 
+                    ? `Contador: ${data.counter}` 
+                    : 'Contador: N/A';
+            }
 
             const serialElement = document.getElementById(`number-series-${ip}`);
-if (serialElement) {
-    serialElement.textContent = data.serial ? `N° Série: ${data.serial}` : 'N° Série: N/A';
-}
+            if (serialElement) {
+                serialElement.textContent = data.serial ? `N° Série: ${data.serial}` : 'N° Série: N/A';
+            }
 
-}
-
+            buttonElement.dataset.errorDetails = data.errorDetails ? JSON.stringify(data.errorDetails) : '[]';
         }
 
         /**
@@ -510,9 +791,9 @@ if (serialElement) {
                 'Imprimindo': 'white',
                 'Em Descanso': 'white',
                 'Aquecendo': 'white',
-                'Sem papel':'white',
-                'Obstrução de papel':'white',
-                'Sem toner':'white',
+                'Sem papel': 'white',
+                'Obstrução de papel': 'white',
+                'Sem toner': 'white',
                 'Erro desconhecido': 'white'
             };
             return statusColors[status] || 'white';
@@ -586,9 +867,9 @@ if (serialElement) {
                 'Imprimindo': '#70FF24',
                 'Em Descanso': '#7eddfc',
                 'Aquecendo': '#FF8307',
-                'Sem papel':'#FF0202',
-                'Obstrução de papel':'#FF0202',
-                'Sem toner':'#FF0202',
+                'Sem papel': '#FF0202',
+                'Obstrução de papel': '#FF0202',
+                'Sem toner': '#FF0202',
                 'Erro desconhecido': '#FF0202',
                 'offline': '#cccccc'
             };
@@ -619,6 +900,248 @@ if (serialElement) {
                 updateTonerStatus(impressora.ip);
             });
         }
+
+        /**
+         * Abre o modal com informações da impressora
+         */
+        function openModal(ip, nome, event) {
+            event.preventDefault();
+            const modal = document.getElementById('printerModal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            const buttonElement = document.getElementById(`button-${ip}`);
+
+            modal.style.display = 'block';
+            modalTitle.textContent = nome;
+
+            const statusElement = document.getElementById(`printer-status-${ip}`);
+            const counterElement = document.getElementById(`counter-${ip}`);
+            const serialElement = document.getElementById(`number-series-${ip}`);
+            const ledElement = document.getElementById(`led-${ip}`);
+            
+            const statusText = statusElement ? statusElement.textContent : 'Desconhecido';
+            const statusColor = ledElement ? window.getComputedStyle(ledElement).backgroundColor : '#999';
+            
+            let errorDetails = [];
+            try {
+                if (buttonElement.dataset.errorDetails) {
+                    errorDetails = JSON.parse(buttonElement.dataset.errorDetails);
+                }
+            } catch (e) {
+                console.error('Erro ao analisar detalhes de erro:', e);
+            }
+
+            const validErrors = errorDetails.filter(error => 
+                error && error !== "N/A" && error !== "Nenhum erro" && error !== ""
+            );
+
+            const tonerLevels = {
+                black: document.getElementById(`toner-${ip}-black`)?.textContent || 'N/A',
+                cyan: document.getElementById(`toner-${ip}-cyan`)?.textContent || 'N/A',
+                magenta: document.getElementById(`toner-${ip}-magenta`)?.textContent || 'N/A',
+                yellow: document.getElementById(`toner-${ip}-yellow`)?.textContent || 'N/A'
+            };
+
+            let statusClass = 'status-unknown';
+            if (statusText.includes('Offline')) {
+                statusClass = 'status-offline';
+            } else if (statusText.includes('Erro') || statusText.includes('Sem') || statusText.includes('Obstrução')) {
+                statusClass = 'status-warning';
+            } else if (statusText.includes('Imprimindo') || statusText.includes('Descanso') || statusText.includes('Aquecendo')) {
+                statusClass = 'status-online';
+            }
+
+            // Buscar dados do tambor via API
+            fetch(`${apiBaseUrl}/toner/${ip}`)
+                .then(response => response.json())
+                .then(data => {
+                    modalBody.innerHTML = `
+                        <div class="modal-body">
+                            <div class="info-row">
+                                <span class="info-label">Endereço IP:</span>
+                                <span class="info-value">${ip} 
+                                    <a href="http://${ip}/sws/index.html" target="_blank" class="web-service-link">
+                                        <span>Acessar Web Service</span>
+                                    </a>
+                                </span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Status:</span>
+                                <span class="info-value">
+                                    <span class="status-indicator-modal ${statusClass}" style="background-color: ${statusColor}20; color: ${statusColor}">
+                                        <span>${statusText}</span>
+                                    </span>
+                                </span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Contador:</span>
+                                <span class="info-value">${counterElement ? counterElement.textContent.replace('Contador: ', '') : 'N/A'}</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Nº Série:</span>
+                                <span class="info-value">${serialElement ? serialElement.textContent.replace('N° Série: ', '') : 'N/A'}</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Vida do Tambor:</span>
+                                <span class="info-value">
+                                    ${data.drum && data.drum.current && data.drum.max ? 
+                                        `${data.drum.current} restantes de ${data.drum.max} páginas (${data.drum.percent}%)` : 
+                                        'Dados não disponíveis'}
+                                </span>
+                            </div>
+                            
+                            ${data.drum && data.drum.percent ? `
+                            <div style="margin-top: 5px; margin-bottom: 20px;">
+                                <div style="width: 100%; background-color: #e0e0e0; border-radius: 5px;">
+                                    <div style="width: ${data.drum.percent}%; height: 20px; background-color: ${
+                                        data.drum.percent > 70 ? '#4CAF50' : 
+                                        data.drum.percent > 30 ? '#FFC107' : '#F44336'
+                                    }; border-radius: 5px; transition: width 0.3s;"></div>
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                           
+                            
+                            <div class="error-section ${validErrors.length > 0 ? 'visible' : ''}">
+                                <h3 class="error-title">
+                                    <span class="error-icon">⚠️</span>
+                                    <span>Detalhes de Erro</span>
+                                </h3>
+                                ${validErrors.map((error, index) => `
+                                    <div class="error-item">
+                                        <strong>Erro ${index + 1}:</strong> ${error}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar dados do tambor:', error);
+                    modalBody.innerHTML = `
+                        <div class="modal-body">
+                            <div class="info-row">
+                                <span class="info-label">Endereço IP:</span>
+                                <span class="info-value">${ip} 
+                                    <a href="http://${ip}/sws/index.html" target="_blank" class="web-service-link">
+                                        <span>Acessar Web Service</span>
+                                    </a>
+                                </span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Status:</span>
+                                <span class="info-value">
+                                    <span class="status-indicator-modal ${statusClass}" style="background-color: ${statusColor}20; color: ${statusColor}">
+                                        <span>${statusText}</span>
+                                    </span>
+                                </span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Contador:</span>
+                                <span class="info-value">${counterElement ? counterElement.textContent.replace('Contador: ', '') : 'N/A'}</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Nº Série:</span>
+                                <span class="info-value">${serialElement ? serialElement.textContent.replace('N° Série: ', '') : 'N/A'}</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Vida do Tambor:</span>
+                                <span class="info-value">Dados não disponíveis</span>
+                            </div>
+                            
+                            ${getTonerModalHTML(tonerLevels, statusText.includes('Offline'))}
+                            
+                            <div class="error-section ${validErrors.length > 0 ? 'visible' : ''}">
+                                <h3 class="error-title">
+                                    <span class="error-icon">⚠️</span>
+                                    <span>Detalhes de Erro</span>
+                                </h3>
+                                ${validErrors.map((error, index) => `
+                                    <div class="error-item">
+                                        <strong>Erro ${index + 1}:</strong> ${error}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+        }
+
+        function getTonerModalHTML(tonerLevels, isOffline) {
+            if (isOffline) {
+                return `
+                    <div class="info-row">
+                        <span class="info-label">Toner:</span>
+                        <span class="info-value">Impressora offline</span>
+                    </div>
+                `;
+            }
+
+            const isColor = tonerLevels.cyan !== 'N/A' && tonerLevels.magenta !== 'N/A' && tonerLevels.yellow !== 'N/A';
+
+            if (!isColor) {
+                return `
+                    <div class="info-row">
+                        <span class="info-label">Toner:</span>
+                        <span class="info-value">${tonerLevels.black}</span>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="info-row">
+                    <span class="info-label">Toner:</span>
+                    <span class="info-value">
+                        <div class="toner-display">
+                            <div class="toner-item">
+                                <div class="toner-color-modal" style="background-color: cyan; border-color: #00a2a2;"></div>
+                                <span class="toner-value-modal">${tonerLevels.cyan}</span>
+                                <span class="toner-label">Ciano</span>
+                            </div>
+                            <div class="toner-item">
+                                <div class="toner-color-modal" style="background-color: magenta; border-color: #a200a2;"></div>
+                                <span class="toner-value-modal">${tonerLevels.magenta}</span>
+                                <span class="toner-label">Magenta</span>
+                            </div>
+                            <div class="toner-item">
+                                <div class="toner-color-modal" style="background-color: yellow; border-color: #a2a200;"></div>
+                                <span class="toner-value-modal">${tonerLevels.yellow}</span>
+                                <span class="toner-label">Amarelo</span>
+                            </div>
+                            <div class="toner-item">
+                                <div class="toner-color-modal" style="background-color: black; border-color: #333;"></div>
+                                <span class="toner-value-modal">${tonerLevels.black}</span>
+                                <span class="toner-label">Preto</span>
+                            </div>
+                        </div>
+                    </span>
+                </div>
+            `;
+        }
+
+        /**
+         * Fecha o modal
+         */
+        function closeModal() {
+            document.getElementById('printerModal').style.display = 'none';
+        }
+
+        // Fechar o modal clicando fora do conteúdo
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('printerModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
 
         // Inicialização
         window.addEventListener('DOMContentLoaded', () => {
