@@ -1,0 +1,2887 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Manrope">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Conhecimento (SEPROR)</title>
+    <meta http-equiv="refresh" content="600">
+    <link rel="shortcut icon" href="src/logo_gov.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            padding-bottom: 70px;
+            background-image: url("/src/ELEMENTO.PNG");
+            background-repeat: no-repeat;
+            background-position: left;
+            background-size: 40%;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        header .logo-left {
+            width: 140px;
+        }
+
+        header .logo-right {
+            width: 100px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            padding-right: 100px;
+        }
+
+        .dropdown-btn {
+            white-space: nowrap;
+            text-overflow: ellipsis; 
+            background-color: transparent;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 25px;
+        }
+
+        .title-menu {
+            font-family: 'Manrope', serif;
+            font-size: 1.4em;
+        }
+
+        .dropdown-btn i {
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f4f4f4;
+            width: 135px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4);
+            z-index: 1;
+            border-radius: 6px;
+            left: 0;
+            top: 90%;
+        }
+
+        .dropdown-content a {
+            color: #000;
+            font-size: 1.0rem;
+            font-family: 'Manrope', serif;
+            font-weight: 550;
+            border-radius: 6px;
+            padding: 15px 10px;
+            text-decoration: none;
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #0D57A1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 20px auto;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .sidebar h2 {
+            color: #033c6b;
+            margin-top: 0;
+            font-family: 'Manrope', serif;
+            border-bottom: 2px solid #033c6b;
+            padding-bottom: 10px;
+        }
+
+        .category-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .category-list li {
+            margin-bottom: 10px;
+        }
+
+        .category-list a {
+            display: block;
+            padding: 12px 15px;
+            background-color: #f0f5fa;
+            border-radius: 5px;
+            color: #033c6b;
+            text-decoration: none;
+            font-family: 'Manrope', serif;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-left: 4px solid #033c6b;
+        }
+
+        .category-list a:hover {
+            background-color: #033c6b;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .category-list a.active {
+            background-color: #033c6b;
+            color: white;
+        }
+
+        .content {
+            flex: 1;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h1 {
+            color: #033c6b;
+            margin-top: 0;
+            font-family: 'Manrope', serif;
+            border-bottom: 2px solid #033c6b;
+            padding-bottom: 15px;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+            font-family: 'Manrope', serif;
+        }
+
+        .search-box button {
+            padding: 0 25px;
+            background-color: #033c6b;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .search-box button:hover {
+            background-color: #0D57A1;
+        }
+
+        .search-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag {
+            background-color: #e9f2fa;
+            color: #033c6b;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #c0d6ec;
+        }
+
+        .tag:hover {
+            background-color: #033c6b;
+            color: white;
+        }
+
+        .knowledge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .knowledge-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #033c6b;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .knowledge-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background-color: #f8fafd;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            color: #033c6b;
+            font-family: 'Manrope', serif;
+            font-size: 1.3rem;
+        }
+
+        .card-category {
+            display: inline-block;
+            background-color: #e9f2fa;
+            color: #033c6b;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .card-body p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-family: 'Manrope', serif;
+        }
+
+        .card-footer {
+            padding: 15px 20px;
+            background-color: #f8fafd;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .card-tag {
+            background-color: #f0f5fa;
+            color: #033c6b;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        .card-link {
+            color: #033c6b;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Manrope', serif;
+            transition: color 0.3s;
+        }
+
+        .card-link:hover {
+            color: #0D57A1;
+            text-decoration: underline;
+        }
+
+        .article-detail {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-header {
+            border-bottom: 2px solid #033c6b;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .article-header h1 {
+            color: #033c6b;
+            margin-top: 0;
+            font-family: 'Manrope', serif;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .article-content {
+            line-height: 1.8;
+            font-family: 'Manrope', serif;
+        }
+
+        .solution-step {
+            background-color: #f8fafd;
+            border-left: 4px solid #033c6b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .solution-step h4 {
+            color: #033c6b;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-family: 'Manrope', serif;
+        }
+
+        .solution-step ul, .solution-step ol {
+            margin-left: 20px;
+        }
+
+        .solution-step li {
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: #033c6b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 20px;
+            font-family: 'Manrope', serif;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #0D57A1;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f8fafd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #033c6b;
+            font-family: 'Manrope', serif;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            font-family: 'Manrope', serif;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .divider {
+            display: block;
+            width: 100%;
+            height: 5px;
+            left: 0;
+            margin: 0.1px 0.5px;
+        }
+
+        @media (max-width: 1100px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .knowledge-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .knowledge-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            header {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            header .logo-left, header .logo-right {
+                width: 100px;
+            }
+            
+            .dropdown {
+                padding-right: 0;
+                margin-top: 15px;
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #033c6b;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #033c6b;
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: 'Manrope', serif;
+            box-sizing: border-box;
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn-primary, .btn-secondary {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            font-family: 'Manrope', serif;
+        }
+        
+        .btn-primary {
+            background-color: #033c6b;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0D57A1;
+        }
+        
+        .btn-secondary {
+            background-color: #777;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #555;
+        }
+        
+        .editor-container {
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .editor-toolbar {
+            background-color: #f8fafd;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .editor-btn {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #033c6b;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .editor-btn:hover {
+            background-color: #e9f2fa;
+            border-color: #033c6b;
+        }
+        
+        .editor-btn.active {
+            background-color: #033c6b;
+            color: white;
+            border-color: #033c6b;
+        }
+        
+        .editor-btn i {
+            font-size: 12px;
+        }
+        
+        .editor-separator {
+            width: 1px;
+            height: 24px;
+            background-color: #ddd;
+            margin: 0 5px;
+        }
+        
+        .editor-content-area {
+            min-height: 300px;
+            padding: 15px;
+            font-family: 'Manrope', serif;
+            font-size: 16px;
+            line-height: 1.6;
+            outline: none;
+            overflow-y: auto;
+        }
+        
+        .editor-content-area:focus {
+            outline: none;
+        }
+        
+        .editor-content-area h1, 
+        .editor-content-area h2, 
+        .editor-content-area h3, 
+        .editor-content-area h4 {
+            color: #033c6b;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        
+        .editor-content-area h1 { font-size: 2em; }
+        .editor-content-area h2 { font-size: 1.5em; }
+        .editor-content-area h3 { font-size: 1.25em; }
+        .editor-content-area h4 { font-size: 1.1em; }
+        
+        .editor-content-area ul, 
+        .editor-content-area ol {
+            padding-left: 2em;
+            margin-bottom: 1em;
+        }
+        
+        .editor-content-area li {
+            margin-bottom: 0.5em;
+        }
+        
+        .editor-content-area blockquote {
+            border-left: 4px solid #033c6b;
+            padding-left: 1em;
+            margin-left: 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .editor-content-area pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .editor-content-area code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .editor-content-area table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1em;
+        }
+        
+        .editor-content-area table th,
+        .editor-content-area table td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        
+        .editor-content-area table th {
+            background-color: #f8fafd;
+            font-weight: bold;
+            color: #033c6b;
+        }
+        
+        .editor-content-area table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .editor-content-area a {
+            color: #0D57A1;
+            text-decoration: underline;
+        }
+        
+        .editor-content-area a:hover {
+            color: #033c6b;
+        }
+        
+        .editor-footer {
+            background-color: #f8fafd;
+            padding: 10px 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .char-counter {
+            font-size: 12px;
+            color: #777;
+        }
+        
+        .char-counter.warning {
+            color: #f57c00;
+        }
+        
+        .char-counter.error {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        
+        .editor-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .editor-action-btn {
+            padding: 6px 12px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+            background-color: white;
+            color: #033c6b;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .editor-action-btn:hover {
+            background-color: #f0f5fa;
+        }
+        
+        .editor-action-btn.primary {
+            background-color: #033c6b;
+            color: white;
+            border-color: #033c6b;
+        }
+        
+        .editor-action-btn.primary:hover {
+            background-color: #0D57A1;
+        }
+        
+        .preview-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8fafd;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            display: none;
+        }
+        
+        .preview-container.show {
+            display: block;
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .preview-title {
+            margin: 0;
+            color: #033c6b;
+            font-size: 18px;
+        }
+        
+        .preview-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: white;
+            border-radius: 3px;
+            border: 1px solid #eee;
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            margin: 0;
+            color: #033c6b;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+            line-height: 1;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .steps-template-btn {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .steps-template-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .formatted-content {
+            font-family: 'Manrope', serif;
+            line-height: 1.6;
+        }
+        
+        .formatted-content h1,
+        .formatted-content h2,
+        .formatted-content h3,
+        .formatted-content h4 {
+            color: #033c6b;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        
+        .formatted-content p {
+            margin-bottom: 1em;
+        }
+        
+        .formatted-content ul,
+        .formatted-content ol {
+            margin-bottom: 1em;
+            padding-left: 2em;
+        }
+        
+        .formatted-content blockquote {
+            border-left: 4px solid #033c6b;
+            padding-left: 1em;
+            margin-left: 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .formatted-content pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .formatted-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .formatted-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1em;
+        }
+        
+        .formatted-content table th,
+        .formatted-content table td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        
+        .formatted-content table th {
+            background-color: #f8fafd;
+            font-weight: bold;
+            color: #033c6b;
+        }
+        
+        .formatted-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        @media (max-width: 768px) {
+            .editor-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .editor-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .editor-separator {
+                display: none;
+            }
+            
+            .editor-footer {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            
+            .editor-actions {
+                width: 100%;
+            }
+            
+            .editor-action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+
+        /* Estilos para botões de ação */
+        .article-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Manrope', serif;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-btn-edit {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .action-btn-edit:hover {
+            background-color: #f57c00;
+        }
+
+        .action-btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .action-btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        .action-btn-copy {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .action-btn-copy:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/src/LOGO_GOV.png" alt="Logo Governo" class="logo-left">
+        <h1>Biblioteca de Conhecimento (SEPROR)</h1>
+        <nav class="dropdown">
+            <button class="dropdown-btn">
+                <span class="title-menu">
+                    Menu <i class="fas fa-chevron-down"></i>
+                </span>
+            </button>
+            <div class="dropdown-content">
+                <a href="#" id="nav-home">Início</a>
+                <a href="#" id="nav-add">Adicionar Conteúdo</a>
+                <a href="#" id="nav-stats">Estatísticas</a>
+            </div>
+        </nav>
+        <img src="src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <h2>Categorias</h2>
+            <ul class="category-list">
+                <li><a href="#" class="category-link active" data-category="all">Todos os Tópicos</a></li>
+                <li><a href="#" class="category-link" data-category="it">TI e Infraestrutura</a></li>
+                <li><a href="#" class="category-link" data-category="network">Rede e Conexão</a></li>
+                <li><a href="#" class="category-link" data-category="printers">Impressoras</a></li>
+                <li><a href="#" class="category-link" data-category="software">Software</a></li>
+                <li><a href="#" class="category-link" data-category="procedures">Procedimentos</a></li>
+                <li><a href="#" class="category-link" data-category="security">Segurança</a></li>
+                <li><a href="#" class="category-link" data-category="other">Outros</a></li>
+            </ul>
+            
+            <div class="stats" style="margin-top: 30px;">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-articles">0</div>
+                    <div class="stat-label">Artigos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="total-categories">0</div>
+                    <div class="stat-label">Categorias</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content" id="main-content">
+            <!-- Conteúdo será carregado dinamicamente aqui -->
+        </main>
+    </div>
+   
+    <footer>
+        <img src="src/LINHA.PNG" alt="Linha divisória" class="divider">
+        <p>&copy; 2025 - Secretária de Estado de Produção Rural - SEPROR. Biblioteca de Conhecimento Interno</p>
+    </footer>
+
+    <!-- Templates para diferentes páginas -->
+    <template id="home-template">
+        <div class="search-container">
+            <h1>Biblioteca de Conhecimento</h1>
+            <p>Encontre soluções para problemas comuns e procedimentos da organização.</p>
+            
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Buscar por palavra-chave...">
+                <button id="search-button"><i class="fas fa-search"></i> Buscar</button>
+            </div>
+            
+            <div class="search-tags" id="popular-tags">
+                <!-- Tags serão inseridas aqui dinamicamente -->
+            </div>
+        </div>
+        
+        <div class="knowledge-grid" id="knowledge-grid">
+            <!-- Cards de conhecimento serão inseridos aqui dinamicamente -->
+        </div>
+    </template>
+
+    <template id="article-template">
+        <div class="article-detail">
+            <div class="article-header">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <h1 id="article-title">Carregando...</h1>
+                        <div class="article-meta">
+                            <span>Categoria: <span id="article-category">Carregando...</span></span>
+                            <span>Atualizado em: <span id="article-date">Carregando...</span></span>
+                            <span>Visualizações: <span id="article-views">0</span></span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-left: 20px;">
+                        <button id="edit-article-btn" class="btn-primary" style="padding: 8px 15px; font-size: 14px;">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button id="delete-article-btn" class="btn-secondary" style="padding: 8px 15px; font-size: 14px; background-color: #dc3545;">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="article-content" id="article-content">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando artigo...</p>
+                </div>
+            </div>
+            
+            <div class="article-tags" style="margin-top: 30px;">
+                <h3>Tags:</h3>
+                <div class="search-tags" id="article-tags">
+                    <!-- Tags do artigo serão inseridas aqui -->
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; display: flex; gap: 15px;">
+                <a href="#" class="back-button" id="back-button"><i class="fas fa-arrow-left"></i> Voltar para a lista</a>
+                <button id="copy-link-btn" class="btn-secondary" style="padding: 10px 20px;">
+                    <i class="fas fa-link"></i> Copiar Link
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Template da página de adição COM CAMPO SINTOMA -->
+    <template id="add-template">
+        <h1>Adicionar Novo Conteúdo</h1>
+        <p>Compartilhe seu conhecimento com a equipe. Use o editor abaixo para formatar seu conteúdo.</p>
+        
+        <form id="add-form">
+            <div class="form-group">
+                <label for="article-title-input" class="form-label">Título:</label>
+                <input type="text" id="article-title-input" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="article-category-select" class="form-label">Categoria:</label>
+                <select id="article-category-select" class="form-select">
+                    <option value="it">TI e Infraestrutura</option>
+                    <option value="network">Rede e Conexão</option>
+                    <option value="printers">Impressoras</option>
+                    <option value="software">Software</option>
+                    <option value="procedures">Procedimentos</option>
+                    <option value="security">Segurança</option>
+                    <option value="other">Outros</option>
+                </select>
+            </div>
+            
+            <!-- CAMPO SINTOMA -->
+            <div class="form-group">
+                <label for="article-sintoma-input" class="form-label">Sintoma (visão do usuário):</label>
+                <textarea id="article-sintoma-input" class="form-input" rows="3" 
+                    placeholder="Descreva brevemente o problema do ponto de vista do usuário. Ex: Usuário não consegue visualizar a pasta do setor contida na rede." 
+                    required></textarea>
+                <small style="color: #666; font-size: 12px;">Este texto aparecerá na miniatura do artigo.</small>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Conteúdo (Passos para Resolução):</label>
+                
+                <!-- Container do editor -->
+                <div class="editor-container">
+                    <!-- Toolbar do editor -->
+                    <div class="editor-toolbar" id="editor-toolbar">
+                        <!-- Formatação básica -->
+                        <button type="button" class="editor-btn" data-command="bold" title="Negrito (Ctrl+B)">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="italic" title="Itálico (Ctrl+I)">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="underline" title="Sublinhado (Ctrl+U)">
+                            <i class="fas fa-underline"></i>
+                        </button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Títulos -->
+                        <button type="button" class="editor-btn" data-command="formatBlock" data-value="h2" title="Título 2">
+                            <i class="fas fa-heading"></i> Título
+                        </button>
+                        <button type="button" class="editor-btn" data-command="formatBlock" data-value="h3" title="Título 3">
+                            <i class="fas fa-heading"></i> Subtítulo
+                        </button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Listas -->
+                        <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Lista não ordenada">
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="insertOrderedList" title="Lista ordenada">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Alinhamento -->
+                        <button type="button" class="editor-btn" data-command="justifyLeft" title="Alinhar à esquerda">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="justifyCenter" title="Centralizar">
+                            <i class="fas fa-align-center"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="justifyRight" title="Alinhar à direita">
+                            <i class="fas fa-align-right"></i>
+                        </button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Elementos especiais -->
+                        <button type="button" class="editor-btn" id="insert-link-btn" title="Inserir link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="createLink" style="display:none;"></button>
+                        <button type="button" class="editor-btn" id="insert-code-btn" title="Inserir bloco de código">
+                            <i class="fas fa-code"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="formatBlock" data-value="blockquote" title="Citação">
+                            <i class="fas fa-quote-right"></i>
+                        </button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Desfazer/Refazer -->
+                        <button type="button" class="editor-btn" data-command="undo" title="Desfazer (Ctrl+Z)">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="redo" title="Refazer (Ctrl+Y)">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="removeFormat" title="Limpar formatação">
+                            <i class="fas fa-eraser"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Área editável -->
+                    <div id="editor-content" class="editor-content-area" contenteditable="true" data-placeholder="Descreva os passos para resolução aqui... Use os botões acima para formatar o texto.">
+                        <p>Descreva os passos para resolução aqui... Use os botões acima para formatar o texto.</p>
+                        <p><strong>Dica:</strong> Para listar passos, use listas numeradas ou com marcadores.</p>
+                    </div>
+                    
+                    <!-- Footer do editor -->
+                    <div class="editor-footer">
+                        <div class="char-counter" id="char-counter">
+                            Caracteres: <span id="char-count">0</span> | Palavras: <span id="word-count">0</span>
+                        </div>
+                        <div class="editor-actions">
+                            <button type="button" class="editor-action-btn" id="preview-btn">
+                                <i class="fas fa-eye"></i> Pré-visualizar
+                            </button>
+                            <button type="button" class="editor-action-btn" id="fullscreen-btn">
+                                <i class="fas fa-expand"></i> Tela Cheia
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botão para template de passos -->
+                <button type="button" class="steps-template-btn" id="steps-template-btn">
+                    <i class="fas fa-magic"></i> Inserir Template de Passos
+                </button>
+                
+                <!-- Campo hidden para armazenar o conteúdo formatado -->
+                <input type="hidden" id="article-steps" name="steps">
+            </div>
+            
+            <!-- Container de pré-visualização -->
+            <div class="preview-container" id="preview-container">
+                <div class="preview-header">
+                    <h4 class="preview-title">Pré-visualização</h4>
+                    <button type="button" class="editor-action-btn" id="close-preview-btn">
+                        <i class="fas fa-times"></i> Fechar
+                    </button>
+                </div>
+                <div class="preview-content" id="preview-content">
+                    <!-- Conteúdo da pré-visualização será inserido aqui -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="article-tags-input" class="form-label">Tags (separadas por vírgula):</label>
+                <input type="text" id="article-tags-input" class="form-input" placeholder="Ex: rede, pastas, compartilhamento">
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Salvar Artigo</button>
+                <button type="button" id="cancel-button" class="btn-secondary">Cancelar</button>
+            </div>
+        </form>
+        
+        <!-- Modal para inserir link -->
+        <div class="modal-overlay" id="link-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Inserir Link</h4>
+                    <button type="button" class="modal-close" id="close-link-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="link-url" class="form-label">URL do Link:</label>
+                        <input type="url" id="link-url" class="form-input" placeholder="https://exemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="link-text" class="form-label">Texto do Link:</label>
+                        <input type="text" id="link-text" class="form-input" placeholder="Texto visível">
+                    </div>
+                    <div class="form-group">
+                        <label for="link-target" class="form-label">
+                            <input type="checkbox" id="link-target"> Abrir em nova aba
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancel-link-btn">Cancelar</button>
+                    <button type="button" class="btn-primary" id="insert-link-btn-modal">Inserir</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal para inserir código -->
+        <div class="modal-overlay" id="code-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Inserir Bloco de Código</h4>
+                    <button type="button" class="modal-close" id="close-code-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="code-language" class="form-label">Linguagem (opcional):</label>
+                        <select id="code-language" class="form-select">
+                            <option value="">Texto Simples</option>
+                            <option value="html">HTML</option>
+                            <option value="css">CSS</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="php">PHP</option>
+                            <option value="sql">SQL</option>
+                            <option value="bash">Bash/Shell</option>
+                            <option value="powershell">PowerShell</option>
+                            <option value="batch">Batch (CMD)</option>
+                            <option value="json">JSON</option>
+                            <option value="xml">XML</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="code-content" class="form-label">Código:</label>
+                        <textarea id="code-content" class="form-textarea" rows="10" placeholder="Cole seu código aqui..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancel-code-btn">Cancelar</button>
+                    <button type="button" class="btn-primary" id="insert-code-btn-modal">Inserir</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Template para estatísticas -->
+    <template id="stats-template">
+        <h1>Estatísticas da Biblioteca</h1>
+        <p>Visão geral do conhecimento acumulado na organização.</p>
+        
+        <div class="stats" style="flex-direction: column; align-items: flex-start; margin-top: 30px;">
+            <div style="width: 100%; display: flex; justify-content: space-around; margin-bottom: 30px;">
+                <div class="stat-item">
+                    <div class="stat-number" id="stats-total-articles">0</div>
+                    <div class="stat-label">Artigos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="stats-total-views">0</div>
+                    <div class="stat-label">Visualizações</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="stats-total-categories">0</div>
+                    <div class="stat-label">Categorias</div>
+                </div>
+            </div>
+            
+            <div style="width: 100%; margin-bottom: 20px;">
+                <h3>Artigos por Categoria</h3>
+                <div id="category-chart" style="margin-top: 20px;">
+                    <!-- Gráfico será gerado aqui -->
+                </div>
+            </div>
+            
+            <div style="width: 100%;">
+                <h3>Artigos Mais Visualizados</h3>
+                <div id="top-articles" style="margin-top: 20px;">
+                    <!-- Artigos mais visualizados -->
+                </div>
+            </div>
+        </div>
+        
+        <a href="#" class="back-button" id="back-button"><i class="fas fa-arrow-left"></i> Voltar para a lista</a>
+    </template>
+
+    <!-- Template da página de edição -->
+    <template id="edit-template">
+        <h1>Editar Artigo</h1>
+        <p>Modifique o conteúdo do artigo abaixo.</p>
+        
+        <form id="edit-form">
+            <input type="hidden" id="edit-article-id">
+            
+            <div class="form-group">
+                <label for="edit-title-input" class="form-label">Título:</label>
+                <input type="text" id="edit-title-input" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-category-select" class="form-label">Categoria:</label>
+                <select id="edit-category-select" class="form-select">
+                    <option value="it">TI e Infraestrutura</option>
+                    <option value="network">Rede e Conexão</option>
+                    <option value="printers">Impressoras</option>
+                    <option value="software">Software</option>
+                    <option value="procedures">Procedimentos</option>
+                    <option value="security">Segurança</option>
+                    <option value="other">Outros</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-sintoma-input" class="form-label">Sintoma (visão do usuário):</label>
+                <textarea id="edit-sintoma-input" class="form-input" rows="3" 
+                    placeholder="Descreva brevemente o problema do ponto de vista do usuário." 
+                    required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Conteúdo (Passos para Resolução):</label>
+                
+                <!-- Container do editor -->
+                <div class="editor-container">
+                    <!-- Toolbar do editor -->
+                    <div class="editor-toolbar" id="edit-editor-toolbar">
+                        <!-- Formatação básica -->
+                        <button type="button" class="editor-btn" data-command="bold" title="Negrito (Ctrl+B)">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="italic" title="Itálico (Ctrl+I)">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="underline" title="Sublinhado (Ctrl+U)">
+                            <i class="fas fa-underline"></i>
+                        </button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Títulos -->
+                        <button type="button" class="editor-btn" data-command="formatBlock" data-value="h2" title="Título 2">
+                            <i class="fas fa-heading"></i> Título
+                        </button>
+                        <button type="button" class="editor-btn" data-command="formatBlock" data-value="h3" title="Título 3">
+                            <i class="fas fa-heading"></i> Subtítulo
+                        </button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Listas -->
+                        <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Lista não ordenada">
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="insertOrderedList" title="Lista ordenada">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Alinhamento -->
+                        <button type="button" class="editor-btn" data-command="justifyLeft" title="Alinhar à esquerda">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="justifyCenter" title="Centralizar">
+                            <i class="fas fa-align-center"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="justifyRight" title="Alinhar à direita">
+                            <i class="fas fa-align-right"></i>
+                        </button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Elementos especiais -->
+                        <button type="button" class="editor-btn" id="edit-insert-link-btn" title="Inserir link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                        <button type="button" class="editor-btn" id="edit-insert-code-btn" title="Inserir bloco de código">
+                            <i class="fas fa-code"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="formatBlock" data-value="blockquote" title="Citação">
+                            <i class="fas fa-quote-right"></i>
+                        </button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Desfazer/Refazer -->
+                        <button type="button" class="editor-btn" data-command="undo" title="Desfazer (Ctrl+Z)">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="redo" title="Refazer (Ctrl+Y)">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="removeFormat" title="Limpar formatação">
+                            <i class="fas fa-eraser"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Área editável -->
+                    <div id="edit-editor-content" class="editor-content-area" contenteditable="true" 
+                        data-placeholder="Descreva os passos para resolução aqui...">
+                    </div>
+                    
+                    <!-- Footer do editor -->
+                    <div class="editor-footer">
+                        <div class="char-counter" id="edit-char-counter">
+                            Caracteres: <span id="edit-char-count">0</span> | Palavras: <span id="edit-word-count">0</span>
+                        </div>
+                        <div class="editor-actions">
+                            <button type="button" class="editor-action-btn" id="edit-preview-btn">
+                                <i class="fas fa-eye"></i> Pré-visualizar
+                            </button>
+                            <button type="button" class="editor-action-btn" id="edit-fullscreen-btn">
+                                <i class="fas fa-expand"></i> Tela Cheia
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botão para template de passos -->
+                <button type="button" class="steps-template-btn" id="edit-steps-template-btn">
+                    <i class="fas fa-magic"></i> Inserir Template de Passos
+                </button>
+            </div>
+            
+            <!-- Container de pré-visualização -->
+            <div class="preview-container" id="edit-preview-container">
+                <div class="preview-header">
+                    <h4 class="preview-title">Pré-visualização</h4>
+                    <button type="button" class="editor-action-btn" id="edit-close-preview-btn">
+                        <i class="fas fa-times"></i> Fechar
+                    </button>
+                </div>
+                <div class="preview-content" id="edit-preview-content">
+                    <!-- Conteúdo da pré-visualização será inserido aqui -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-tags-input" class="form-label">Tags (separadas por vírgula):</label>
+                <input type="text" id="edit-tags-input" class="form-input" placeholder="Ex: rede, pastas, compartilhamento">
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Salvar Alterações</button>
+                <button type="button" id="edit-cancel-button" class="btn-secondary">Cancelar</button>
+                <button type="button" id="delete-article-confirm-btn" class="btn-secondary" style="background-color: #dc3545;">
+                    <i class="fas fa-trash"></i> Excluir Artigo
+                </button>
+            </div>
+        </form>
+        
+        <!-- Modal de confirmação de exclusão -->
+        <div class="modal-overlay" id="delete-confirm-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirmar Exclusão</h4>
+                    <button type="button" class="modal-close" id="close-delete-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja excluir o artigo "<span id="delete-article-title"></span>"?</p>
+                    <p style="color: #dc3545; font-weight: bold;">
+                        <i class="fas fa-exclamation-triangle"></i> Esta ação não pode ser desfeita!
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancel-delete-btn">Cancelar</button>
+                    <button type="button" class="btn-primary" id="confirm-delete-btn" style="background-color: #dc3545;">Excluir Artigo</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        // Estado da aplicação
+        let currentView = 'home';
+        let currentCategory = 'all';
+        let searchTerm = '';
+        let allTags = [];
+        let knowledgeBase = [];
+        let apiBaseUrl = '';
+        let editor = null;
+        let isFullscreen = false;
+        let originalEditorHeight = '';
+        let editingArticleId = null;
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeApp();
+            await loadHomePage();
+            setupEventListeners();
+        });
+
+        // Inicializar aplicação
+        async function initializeApp() {
+            try {
+                // Carregar configurações da API
+                const configResponse = await fetch('/api/config');
+                const config = await configResponse.json();
+                apiBaseUrl = `http://${config.host}:${config.port}`;
+                
+                // Carregar base de conhecimento da API
+                const response = await fetch('/api/knowledge');
+                if (!response.ok) throw new Error('Erro ao carregar base de conhecimento');
+                
+                knowledgeBase = await response.json();
+                
+                // Extrair todas as tags únicas
+                const tagSet = new Set();
+                knowledgeBase.forEach(article => {
+                    if (article.tags && Array.isArray(article.tags)) {
+                        article.tags.forEach(tag => tagSet.add(tag));
+                    }
+                });
+                allTags = Array.from(tagSet);
+                
+                // Carregar estatísticas
+                await loadStats();
+                
+            } catch (error) {
+                console.error('Erro ao inicializar aplicação:', error);
+                showError('Não foi possível carregar a base de conhecimento. Verifique se o servidor está rodando.');
+                
+                // Atualizar estatísticas na sidebar
+                document.getElementById('total-articles').textContent = '0';
+                document.getElementById('total-categories').textContent = '0';
+            }
+        }
+
+        // Carregar estatísticas da API
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/knowledge/stats');
+                if (!response.ok) throw new Error('Erro ao carregar estatísticas');
+                
+                const stats = await response.json();
+                
+                // Atualizar estatísticas na sidebar
+                document.getElementById('total-articles').textContent = stats.totalArticles;
+                document.getElementById('total-categories').textContent = Object.keys(stats.categories).length;
+                
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+                // Usar estatísticas locais como fallback
+                document.getElementById('total-articles').textContent = knowledgeBase.length;
+                document.getElementById('total-categories').textContent = 
+                    new Set(knowledgeBase.map(article => article.categoryName)).size;
+            }
+        }
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Navegação do menu
+            document.getElementById('nav-home').addEventListener('click', function(e) {
+                e.preventDefault();
+                loadHomePage();
+            });
+            
+            document.getElementById('nav-add').addEventListener('click', function(e) {
+                e.preventDefault();
+                loadAddPage();
+            });
+            
+            document.getElementById('nav-stats').addEventListener('click', function(e) {
+                e.preventDefault();
+                loadStatsPage();
+            });
+            
+            // Categorias
+            document.querySelectorAll('.category-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const category = this.getAttribute('data-category');
+                    
+                    // Atualizar categoria ativa
+                    document.querySelectorAll('.category-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentCategory = category;
+                    loadHomePage();
+                });
+            });
+            
+            // Event delegation para elementos dinâmicos
+            document.addEventListener('click', function(e) {
+                // Busca
+                if (e.target.id === 'search-button' || e.target.closest('#search-button')) {
+                    e.preventDefault();
+                    performSearch();
+                }
+                
+                // Botões de voltar
+                if (e.target.id === 'back-button' || e.target.closest('#back-button')) {
+                    e.preventDefault();
+                    loadHomePage();
+                }
+                
+                // Botão cancelar
+                if (e.target.id === 'cancel-button' || e.target.closest('#cancel-button')) {
+                    e.preventDefault();
+                    loadHomePage();
+                }
+                
+                // Botão cancelar edição
+                if (e.target.id === 'edit-cancel-button' || e.target.closest('#edit-cancel-button')) {
+                    e.preventDefault();
+                    loadHomePage();
+                }
+                
+                // Tags populares
+                if (e.target.classList.contains('tag') || e.target.closest('.tag')) {
+                    e.preventDefault();
+                    const tag = e.target.classList.contains('tag') ? 
+                        e.target.textContent : e.target.closest('.tag').textContent;
+                    searchByTag(tag);
+                }
+                
+                // Cards de conhecimento
+                if (e.target.closest('.knowledge-card')) {
+                    const card = e.target.closest('.knowledge-card');
+                    const articleId = parseInt(card.getAttribute('data-id'));
+                    if (articleId) {
+                        e.preventDefault();
+                        loadArticlePage(articleId);
+                    }
+                }
+                
+                // Links em artigos mais visualizados
+                if (e.target.closest('.top-article-link')) {
+                    e.preventDefault();
+                    const articleId = parseInt(e.target.closest('.top-article-link').getAttribute('data-id'));
+                    if (articleId) {
+                        loadArticlePage(articleId);
+                    }
+                }
+                
+                // Botão de editar artigo
+                if (e.target.id === 'edit-article-btn' || e.target.closest('#edit-article-btn')) {
+                    e.preventDefault();
+                    const articleId = parseInt(document.getElementById('article-title').getAttribute('data-id') || editingArticleId);
+                    if (articleId) {
+                        loadEditPage(articleId);
+                    }
+                }
+                
+                // Botão de excluir artigo (na página de detalhes)
+                if (e.target.id === 'delete-article-btn' || e.target.closest('#delete-article-btn')) {
+                    e.preventDefault();
+                    const articleId = parseInt(document.getElementById('article-title').getAttribute('data-id') || editingArticleId);
+                    if (articleId && confirm('Tem certeza que deseja excluir este artigo? Esta ação não pode ser desfeita.')) {
+                        deleteArticle(articleId);
+                    }
+                }
+                
+                // Botão de excluir artigo (na página de edição)
+                if (e.target.id === 'delete-article-confirm-btn' || e.target.closest('#delete-article-confirm-btn')) {
+                    e.preventDefault();
+                    const articleId = parseInt(document.getElementById('edit-article-id').value);
+                    if (articleId) {
+                        showDeleteConfirmation(articleId, document.getElementById('edit-title-input').value);
+                    }
+                }
+                
+                // Botão de copiar link
+                if (e.target.id === 'copy-link-btn' || e.target.closest('#copy-link-btn')) {
+                    e.preventDefault();
+                    const articleId = parseInt(document.getElementById('article-title').getAttribute('data-id') || editingArticleId);
+                    if (articleId) {
+                        const url = `${window.location.origin}${window.location.pathname}#article-${articleId}`;
+                        navigator.clipboard.writeText(url).then(() => {
+                            alert('Link copiado para a área de transferência!');
+                        }).catch(err => {
+                            console.error('Erro ao copiar link:', err);
+                            alert('Erro ao copiar link. Tente manualmente.');
+                        });
+                    }
+                }
+            });
+            
+            // Formulário de adição
+            document.addEventListener('submit', async function(e) {
+                if (e.target.id === 'add-form') {
+                    e.preventDefault();
+                    await addNewArticle();
+                }
+                if (e.target.id === 'edit-form') {
+                    e.preventDefault();
+                    await updateArticle();
+                }
+            });
+        }
+
+        // Carregar página inicial
+        async function loadHomePage() {
+            currentView = 'home';
+            editingArticleId = null;
+            
+            const template = document.getElementById('home-template');
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = template.innerHTML;
+            
+            // Mostrar loading enquanto carrega artigos
+            const knowledgeGrid = document.getElementById('knowledge-grid');
+            knowledgeGrid.innerHTML = `
+                <div class="loading" style="grid-column: 1 / -1;">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando artigos...</p>
+                </div>
+            `;
+            
+            try {
+                // Atualizar tags populares
+                updatePopularTags();
+                
+                // Carregar artigos
+                await displayArticles();
+                
+            } catch (error) {
+                console.error('Erro ao carregar página inicial:', error);
+                knowledgeGrid.innerHTML = `
+                    <div class="error-message" style="grid-column: 1 / -1;">
+                        <p>Erro ao carregar artigos. Tente novamente mais tarde.</p>
+                    </div>
+                `;
+            }
+            
+            // Configurar busca
+            document.getElementById('search-button').addEventListener('click', performSearch);
+            document.getElementById('search-input').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') performSearch();
+            });
+        }
+
+        // Carregar página do artigo
+        async function loadArticlePage(articleId) {
+            currentView = 'article';
+            editingArticleId = articleId;
+            
+            const template = document.getElementById('article-template');
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = template.innerHTML;
+            
+            try {
+                // Buscar artigo da API
+                const response = await fetch(`/api/knowledge/${articleId}`);
+                if (!response.ok) throw new Error('Artigo não encontrado');
+                
+                const article = await response.json();
+                
+                // Incrementar visualizações via API
+                await fetch(`/api/knowledge/${articleId}/view`, { method: 'PUT' });
+                
+                // Atualizar informações do artigo
+                document.getElementById('article-title').textContent = article.title;
+                document.getElementById('article-title').setAttribute('data-id', article.id);
+                document.getElementById('article-category').textContent = article.categoryName;
+                document.getElementById('article-date').textContent = article.date;
+                document.getElementById('article-views').textContent = article.views + 1;
+                
+                // Conteúdo do artigo
+                const articleContent = document.getElementById('article-content');
+                
+                let articleHTML = '';
+                
+                // Adicionar seção de sintoma
+                if (article.sintoma) {
+                    articleHTML += `
+                        <div class="solution-step" style="background-color: #fff8e1; border-left-color: #ff9800;">
+                            <h4><i class="fas fa-exclamation-circle"></i> Sintoma (Visão do Usuário)</h4>
+                            <p>${escapeHtml(article.sintoma)}</p>
+                        </div>
+                    `;
+                }
+                
+                // Adicionar seção de solução (steps)
+                if (article.steps) {
+                    let stepsContent = '';
+                    
+                    if (typeof article.steps === 'string') {
+                        stepsContent = article.steps.trim() !== '' ? article.steps : '';
+                    } else if (Array.isArray(article.steps)) {
+                        stepsContent = article.steps.map(step => {
+                            if (typeof step === 'string') {
+                                return `<p>${escapeHtml(step)}</p>`;
+                            }
+                            return '';
+                        }).join('');
+                    }
+                    
+                    if (stepsContent) {
+                        articleHTML += `
+                            <div class="solution-step">
+                                <h4><i class="fas fa-list-check"></i> Passos para Resolução</h4>
+                                <div class="formatted-content">
+                                    ${stepsContent}
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                articleContent.innerHTML = articleHTML;
+                
+                // Tags do artigo
+                const articleTags = document.getElementById('article-tags');
+                articleTags.innerHTML = '';
+                if (article.tags && Array.isArray(article.tags)) {
+                    article.tags.forEach(tag => {
+                        const tagElement = document.createElement('span');
+                        tagElement.className = 'tag';
+                        tagElement.textContent = tag;
+                        articleTags.appendChild(tagElement);
+                    });
+                }
+                
+                // Atualizar a base de conhecimento local
+                const articleIndex = knowledgeBase.findIndex(a => a.id === articleId);
+                if (articleIndex !== -1) {
+                    knowledgeBase[articleIndex] = article;
+                    knowledgeBase[articleIndex].views++;
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar artigo:', error);
+                const articleContent = document.getElementById('article-content');
+                articleContent.innerHTML = `
+                    <div class="error-message">
+                        <p>Erro ao carregar o artigo: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Carregar página de adição
+        function loadAddPage() {
+            currentView = 'add';
+            editingArticleId = null;
+            
+            const template = document.getElementById('add-template');
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = template.innerHTML;
+            
+            // Resetar formulário
+            document.getElementById('add-form').reset();
+            
+            // Inicializar editor
+            initEditor();
+        }
+
+        // Carregar página de edição
+        function loadEditPage(articleId) {
+            currentView = 'edit';
+            editingArticleId = articleId;
+            
+            const template = document.getElementById('edit-template');
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = template.innerHTML;
+            
+            // Carregar os dados do artigo
+            loadArticleDataForEdit(articleId);
+        }
+
+        // Função para carregar dados do artigo no formulário de edição
+        async function loadArticleDataForEdit(articleId) {
+            try {
+                // Buscar artigo da API
+                const response = await fetch(`/api/knowledge/${articleId}`);
+                if (!response.ok) throw new Error('Artigo não encontrado');
+                
+                const article = await response.json();
+                
+                // Preencher formulário
+                document.getElementById('edit-article-id').value = article.id;
+                document.getElementById('edit-title-input').value = article.title;
+                document.getElementById('edit-category-select').value = article.category;
+                document.getElementById('edit-sintoma-input').value = article.sintoma || '';
+                
+                // Preencher editor com conteúdo HTML
+                const editorContent = document.getElementById('edit-editor-content');
+                editorContent.innerHTML = article.steps || '';
+                
+                // Preencher tags
+                const tags = article.tags && Array.isArray(article.tags) ? article.tags.join(', ') : '';
+                document.getElementById('edit-tags-input').value = tags;
+                
+                // Inicializar editor
+                initEditEditor();
+                
+                // Atualizar título do modal de exclusão
+                document.getElementById('delete-article-title').textContent = article.title;
+                
+            } catch (error) {
+                console.error('Erro ao carregar artigo para edição:', error);
+                showError('Erro ao carregar artigo para edição: ' + error.message);
+            }
+        }
+
+        // Inicializar o editor de texto (adição)
+        function initEditor() {
+            const editorElement = document.getElementById('editor-content');
+            const toolbarButtons = document.querySelectorAll('#editor-toolbar .editor-btn');
+            const charCounter = document.getElementById('char-counter');
+            const charCount = document.getElementById('char-count');
+            const wordCount = document.getElementById('word-count');
+            
+            // Salvar altura original do editor
+            originalEditorHeight = editorElement.style.height || '300px';
+            
+            // Atualizar contador de caracteres
+            function updateCharCounter() {
+                const content = editorElement.innerHTML;
+                const textContent = editorElement.textContent || editorElement.innerText;
+                
+                const charCountValue = textContent.length;
+                const words = textContent.trim().split(/\s+/).filter(word => word.length > 0);
+                const wordCountValue = words.length;
+                
+                charCount.textContent = charCountValue;
+                wordCount.textContent = wordCountValue;
+                
+                charCounter.classList.remove('warning', 'error');
+                if (charCountValue > 5000) {
+                    charCounter.classList.add('warning');
+                }
+                if (charCountValue > 10000) {
+                    charCounter.classList.add('error');
+                }
+            }
+            
+            // Configurar eventos do editor
+            editorElement.addEventListener('input', updateCharCounter);
+            editorElement.addEventListener('paste', function(e) {
+                setTimeout(updateCharCounter, 0);
+            });
+            
+            // Atualizar contador inicial
+            updateCharCounter();
+            
+            // Configurar botões da toolbar
+            toolbarButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const command = this.getAttribute('data-command');
+                    const value = this.getAttribute('data-value');
+                    
+                    if (command === 'createLink') {
+                        document.getElementById('link-modal').classList.add('show');
+                        document.getElementById('link-url').focus();
+                    } else {
+                        document.execCommand(command, false, value);
+                        editorElement.focus();
+                    }
+                    
+                    updateCharCounter();
+                });
+            });
+            
+            // Configurar botão de template de passos
+            document.getElementById('steps-template-btn').addEventListener('click', function() {
+                const template = `
+                    <h3>Passos para Resolver:</h3>
+                    <ol>
+                        <li>Primeiro passo: Descreva o primeiro procedimento</li>
+                        <li>Segundo passo: Descreva o segundo procedimento</li>
+                        <li>Terceiro passo: Descreva o terceiro procedimento</li>
+                    </ol>
+                    <h3>Comandos Úteis:</h3>
+                    <pre><code>comando --exemplo
+# Explicação do comando</code></pre>
+                `;
+                
+                const selection = window.getSelection();
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                
+                const templateElement = document.createElement('div');
+                templateElement.innerHTML = template;
+                range.insertNode(templateElement);
+                
+                editorElement.focus();
+                updateCharCounter();
+            });
+            
+            // Configurar botão de pré-visualização
+            document.getElementById('preview-btn').addEventListener('click', function() {
+                const previewContent = document.getElementById('preview-content');
+                previewContent.innerHTML = `
+                    <div class="formatted-content">
+                        ${editorElement.innerHTML}
+                    </div>
+                `;
+                document.getElementById('preview-container').classList.add('show');
+            });
+            
+            // Configurar botão de fechar pré-visualização
+            document.getElementById('close-preview-btn').addEventListener('click', function() {
+                document.getElementById('preview-container').classList.remove('show');
+            });
+            
+            // Configurar botão de tela cheia
+            document.getElementById('fullscreen-btn').addEventListener('click', function() {
+                const editorContainer = editorElement.parentElement.parentElement;
+                
+                if (!isFullscreen) {
+                    editorContainer.style.position = 'fixed';
+                    editorContainer.style.top = '0';
+                    editorContainer.style.left = '0';
+                    editorContainer.style.width = '100%';
+                    editorContainer.style.height = '100%';
+                    editorContainer.style.zIndex = '1001';
+                    editorContainer.style.backgroundColor = 'white';
+                    editorContainer.style.borderRadius = '0';
+                    editorContainer.style.border = 'none';
+                    
+                    editorElement.style.height = 'calc(100% - 120px)';
+                    this.innerHTML = '<i class="fas fa-compress"></i> Sair da Tela Cheia';
+                    isFullscreen = true;
+                } else {
+                    editorContainer.style.position = '';
+                    editorContainer.style.top = '';
+                    editorContainer.style.left = '';
+                    editorContainer.style.width = '';
+                    editorContainer.style.height = '';
+                    editorContainer.style.zIndex = '';
+                    editorContainer.style.backgroundColor = '';
+                    editorContainer.style.borderRadius = '';
+                    editorContainer.style.border = '';
+                    
+                    editorElement.style.height = originalEditorHeight;
+                    this.innerHTML = '<i class="fas fa-expand"></i> Tela Cheia';
+                    isFullscreen = false;
+                }
+            });
+            
+            // Configurar modal de link
+            setupLinkModal();
+            
+            // Configurar modal de código
+            setupCodeModal();
+            
+            // Focar no editor
+            setTimeout(() => {
+                editorElement.focus();
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.setStart(editorElement, 0);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }, 100);
+        }
+
+        // Inicializar o editor de edição
+        function initEditEditor() {
+            const editorElement = document.getElementById('edit-editor-content');
+            const toolbarButtons = document.querySelectorAll('#edit-editor-toolbar .editor-btn');
+            const charCounter = document.getElementById('edit-char-counter');
+            const charCount = document.getElementById('edit-char-count');
+            const wordCount = document.getElementById('edit-word-count');
+            
+            // Atualizar contador de caracteres
+            function updateCharCounter() {
+                const content = editorElement.innerHTML;
+                const textContent = editorElement.textContent || editorElement.innerText;
+                
+                const charCountValue = textContent.length;
+                const words = textContent.trim().split(/\s+/).filter(word => word.length > 0);
+                const wordCountValue = words.length;
+                
+                charCount.textContent = charCountValue;
+                wordCount.textContent = wordCountValue;
+                
+                charCounter.classList.remove('warning', 'error');
+                if (charCountValue > 5000) charCounter.classList.add('warning');
+                if (charCountValue > 10000) charCounter.classList.add('error');
+            }
+            
+            // Configurar eventos do editor
+            editorElement.addEventListener('input', updateCharCounter);
+            editorElement.addEventListener('paste', () => setTimeout(updateCharCounter, 0));
+            
+            // Atualizar contador inicial
+            updateCharCounter();
+            
+            // Configurar botões da toolbar
+            toolbarButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const command = this.getAttribute('data-command');
+                    const value = this.getAttribute('data-value');
+                    
+                    document.execCommand(command, false, value);
+                    editorElement.focus();
+                    updateCharCounter();
+                });
+            });
+            
+            // Configurar botão de template de passos
+            document.getElementById('edit-steps-template-btn').addEventListener('click', function() {
+                const template = `
+                    <h3>Passos para Resolver:</h3>
+                    <ol>
+                        <li>Primeiro passo: Descreva o primeiro procedimento</li>
+                        <li>Segundo passo: Descreva o segundo procedimento</li>
+                        <li>Terceiro passo: Descreva o terceiro procedimento</li>
+                    </ol>
+                    <h3>Comandos Úteis:</h3>
+                    <pre><code>comando --exemplo
+# Explicação do comando</code></pre>
+                `;
+                
+                const selection = window.getSelection();
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                
+                const templateElement = document.createElement('div');
+                templateElement.innerHTML = template;
+                range.insertNode(templateElement);
+                
+                editorElement.focus();
+                updateCharCounter();
+            });
+            
+            // Configurar botão de pré-visualização
+            document.getElementById('edit-preview-btn').addEventListener('click', function() {
+                const previewContent = document.getElementById('edit-preview-content');
+                previewContent.innerHTML = `
+                    <div class="formatted-content">
+                        ${editorElement.innerHTML}
+                    </div>
+                `;
+                document.getElementById('edit-preview-container').classList.add('show');
+            });
+            
+            // Configurar botão de fechar pré-visualização
+            document.getElementById('edit-close-preview-btn').addEventListener('click', function() {
+                document.getElementById('edit-preview-container').classList.remove('show');
+            });
+            
+            // Configurar botão de tela cheia
+            document.getElementById('edit-fullscreen-btn').addEventListener('click', function() {
+                const editorContainer = editorElement.parentElement.parentElement;
+                
+                if (!isFullscreen) {
+                    editorContainer.style.position = 'fixed';
+                    editorContainer.style.top = '0';
+                    editorContainer.style.left = '0';
+                    editorContainer.style.width = '100%';
+                    editorContainer.style.height = '100%';
+                    editorContainer.style.zIndex = '1001';
+                    editorContainer.style.backgroundColor = 'white';
+                    this.innerHTML = '<i class="fas fa-compress"></i> Sair da Tela Cheia';
+                    isFullscreen = true;
+                } else {
+                    editorContainer.style.position = '';
+                    editorContainer.style.top = '';
+                    editorContainer.style.left = '';
+                    editorContainer.style.width = '';
+                    editorContainer.style.height = '';
+                    editorContainer.style.zIndex = '';
+                    editorContainer.style.backgroundColor = '';
+                    this.innerHTML = '<i class="fas fa-expand"></i> Tela Cheia';
+                    isFullscreen = false;
+                }
+            });
+            
+            // Configurar modal de confirmação de exclusão
+            setupDeleteModal();
+            
+            // Focar no editor
+            setTimeout(() => {
+                editorElement.focus();
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.setStart(editorElement, 0);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }, 100);
+        }
+
+        // Configurar modal de link
+        function setupLinkModal() {
+            document.getElementById('close-link-modal').addEventListener('click', function() {
+                document.getElementById('link-modal').classList.remove('show');
+            });
+            
+            document.getElementById('cancel-link-btn').addEventListener('click', function() {
+                document.getElementById('link-modal').classList.remove('show');
+            });
+            
+            document.getElementById('insert-link-btn-modal').addEventListener('click', function() {
+                const url = document.getElementById('link-url').value.trim();
+                const text = document.getElementById('link-text').value.trim() || url;
+                const target = document.getElementById('link-target').checked ? '_blank' : '_self';
+                
+                if (url) {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.textContent = text;
+                    link.target = target;
+                    link.rel = 'noopener noreferrer';
+                    
+                    const editorElement = document.getElementById('editor-content');
+                    const selection = window.getSelection();
+                    const range = selection.getRangeAt(0);
+                    range.deleteContents();
+                    range.insertNode(link);
+                    
+                    editorElement.focus();
+                    
+                    document.getElementById('link-url').value = '';
+                    document.getElementById('link-text').value = '';
+                    document.getElementById('link-target').checked = false;
+                    document.getElementById('link-modal').classList.remove('show');
+                }
+            });
+        }
+
+        // Configurar modal de código
+        function setupCodeModal() {
+            document.getElementById('close-code-modal').addEventListener('click', function() {
+                document.getElementById('code-modal').classList.remove('show');
+            });
+            
+            document.getElementById('cancel-code-btn').addEventListener('click', function() {
+                document.getElementById('code-modal').classList.remove('show');
+            });
+            
+            document.getElementById('insert-code-btn-modal').addEventListener('click', function() {
+                const language = document.getElementById('code-language').value;
+                const code = document.getElementById('code-content').value.trim();
+                
+                if (code) {
+                    const codeBlock = document.createElement('pre');
+                    const codeElement = document.createElement('code');
+                    
+                    if (language) {
+                        codeElement.className = `language-${language}`;
+                    }
+                    
+                    codeElement.textContent = code;
+                    codeBlock.appendChild(codeElement);
+                    
+                    const editorElement = document.getElementById('editor-content');
+                    const selection = window.getSelection();
+                    const range = selection.getRangeAt(0);
+                    range.deleteContents();
+                    range.insertNode(codeBlock);
+                    
+                    const br = document.createElement('br');
+                    range.insertNode(br);
+                    
+                    editorElement.focus();
+                    
+                    document.getElementById('code-language').value = '';
+                    document.getElementById('code-content').value = '';
+                    document.getElementById('code-modal').classList.remove('show');
+                }
+            });
+        }
+
+        // Configurar modal de confirmação de exclusão
+        function setupDeleteModal() {
+            document.getElementById('close-delete-modal').addEventListener('click', function() {
+                document.getElementById('delete-confirm-modal').classList.remove('show');
+            });
+            
+            document.getElementById('cancel-delete-btn').addEventListener('click', function() {
+                document.getElementById('delete-confirm-modal').classList.remove('show');
+            });
+            
+            document.getElementById('confirm-delete-btn').addEventListener('click', async function() {
+                const articleId = parseInt(document.getElementById('edit-article-id').value);
+                if (articleId) {
+                    await deleteArticle(articleId);
+                    document.getElementById('delete-confirm-modal').classList.remove('show');
+                }
+            });
+        }
+
+        // Mostrar confirmação de exclusão
+        function showDeleteConfirmation(articleId, articleTitle) {
+            document.getElementById('delete-article-title').textContent = articleTitle;
+            document.getElementById('delete-confirm-modal').classList.add('show');
+        }
+
+        // Carregar página de estatísticas
+        async function loadStatsPage() {
+            currentView = 'stats';
+            editingArticleId = null;
+            
+            const template = document.getElementById('stats-template');
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = template.innerHTML;
+            
+            try {
+                const response = await fetch('/api/knowledge/stats');
+                if (!response.ok) throw new Error('Erro ao carregar estatísticas');
+                
+                const stats = await response.json();
+                
+                // Atualizar estatísticas
+                document.getElementById('stats-total-articles').textContent = stats.totalArticles;
+                document.getElementById('stats-total-views').textContent = stats.totalViews;
+                document.getElementById('stats-total-categories').textContent = Object.keys(stats.categories).length;
+                
+                // Gerar gráfico de categorias
+                generateCategoryChart(stats.categories);
+                
+                // Gerar lista de artigos mais visualizados
+                generateTopArticles(stats.topArticles);
+                
+            } catch (error) {
+                console.error('Erro ao carregar página de estatísticas:', error);
+                mainContent.innerHTML = `
+                    <div class="error-message">
+                        <p>Erro ao carregar estatísticas: ${error.message}</p>
+                    </div>
+                    <a href="#" class="back-button" id="back-button"><i class="fas fa-arrow-left"></i> Voltar para a lista</a>
+                `;
+            }
+        }
+
+        // Exibir artigos
+        async function displayArticles() {
+            let filteredArticles = knowledgeBase;
+            
+            // Filtrar por categoria
+            if (currentCategory !== 'all') {
+                filteredArticles = filteredArticles.filter(article => article.category === currentCategory);
+            }
+            
+            // Filtrar por termo de busca
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filteredArticles = filteredArticles.filter(article => 
+                    article.title.toLowerCase().includes(term) ||
+                    (article.sintoma && article.sintoma.toLowerCase().includes(term)) ||
+                    (article.steps && 
+                        (typeof article.steps === 'string' ? 
+                            article.steps.toLowerCase().includes(term) :
+                            Array.isArray(article.steps) && 
+                            article.steps.some(step => 
+                                typeof step === 'string' && step.toLowerCase().includes(term)
+                            )
+                        )
+                    ) ||
+                    (article.tags && article.tags.some(tag => tag.toLowerCase().includes(term)))
+                );
+            }
+            
+            // Exibir artigos
+            const knowledgeGrid = document.getElementById('knowledge-grid');
+            knowledgeGrid.innerHTML = '';
+            
+            if (filteredArticles.length === 0) {
+                knowledgeGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #777;">
+                        <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px;"></i>
+                        <h3>Nenhum artigo encontrado</h3>
+                        <p>Tente usar termos de busca diferentes ou selecione outra categoria.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredArticles.forEach(article => {
+                const card = document.createElement('div');
+                card.className = 'knowledge-card';
+                card.setAttribute('data-id', article.id);
+                
+                // USAR O CAMPO "SINTOMA" PARA O PREVIEW
+                let sintomaContent = '';
+                if (article.sintoma) {
+                    sintomaContent = article.sintoma.length > 150 ? 
+                        article.sintoma.substring(0, 150) + '...' : article.sintoma;
+                } else {
+                    sintomaContent = 'Nenhum sintoma descrito';
+                }
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${escapeHtml(article.title)}</h3>
+                        <span class="card-category">${escapeHtml(article.categoryName)}</span>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Sintoma:</strong> ${escapeHtml(sintomaContent)}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-tags">
+                            ${article.tags && article.tags.length > 0 ? 
+                                article.tags.map(tag => `<span class="card-tag">${escapeHtml(tag)}</span>`).join('') : 
+                                '<span class="card-tag">Sem tags</span>'}
+                        </div>
+                        <a href="#" class="card-link">Ver detalhes →</a>
+                    </div>
+                `;
+                
+                knowledgeGrid.appendChild(card);
+            });
+        }
+
+        // Atualizar tags populares
+        function updatePopularTags() {
+            const popularTags = document.getElementById('popular-tags');
+            popularTags.innerHTML = '';
+            
+            if (allTags.length === 0) {
+                popularTags.innerHTML = '<span style="color: #777;">Nenhuma tag disponível</span>';
+                return;
+            }
+            
+            // Ordenar tags por frequência
+            const tagFrequency = {};
+            knowledgeBase.forEach(article => {
+                if (article.tags && Array.isArray(article.tags)) {
+                    article.tags.forEach(tag => {
+                        tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
+                    });
+                }
+            });
+            
+            const sortedTags = Object.keys(tagFrequency)
+                .sort((a, b) => tagFrequency[b] - tagFrequency[a])
+                .slice(0, 10);
+            
+            sortedTags.forEach(tag => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'tag';
+                tagElement.textContent = tag;
+                popularTags.appendChild(tagElement);
+            });
+        }
+
+        // Executar busca
+        function performSearch() {
+            searchTerm = document.getElementById('search-input').value.trim();
+            displayArticles();
+        }
+
+        // Buscar por tag
+        function searchByTag(tag) {
+            searchTerm = tag;
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.value = tag;
+            displayArticles();
+        }
+
+        // Adicionar novo artigo via API
+        async function addNewArticle() {
+            const title = document.getElementById('article-title-input').value.trim();
+            const category = document.getElementById('article-category-select').value;
+            const sintoma = document.getElementById('article-sintoma-input').value.trim();
+            const editorContent = document.getElementById('editor-content');
+            const steps = editorContent ? editorContent.innerHTML : '';
+            const tagsInput = document.getElementById('article-tags-input').value.trim();
+            
+            if (!title || !category || !sintoma || !steps) {
+                alert('Preencha todos os campos obrigatórios!');
+                return;
+            }
+            
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = steps;
+            if (!tempDiv.textContent.trim()) {
+                alert('O conteúdo não pode estar vazio!');
+                return;
+            }
+            
+            const tags = tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag);
+            
+            const submitButton = document.querySelector('#add-form button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            submitButton.disabled = true;
+            
+            try {
+                const response = await fetch('/api/knowledge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        category,
+                        sintoma,
+                        steps,
+                        tags
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Erro ao adicionar artigo');
+                }
+                
+                const newArticle = await response.json();
+                
+                // Atualizar a base de conhecimento local
+                knowledgeBase.push(newArticle);
+                
+                // Atualizar tags
+                tags.forEach(tag => {
+                    if (!allTags.includes(tag)) {
+                        allTags.push(tag);
+                    }
+                });
+                
+                // Atualizar estatísticas na sidebar
+                document.getElementById('total-articles').textContent = knowledgeBase.length;
+                document.getElementById('total-categories').textContent = 
+                    new Set(knowledgeBase.map(article => article.categoryName)).size;
+                
+                alert('Artigo adicionado com sucesso!');
+                loadHomePage();
+                
+            } catch (error) {
+                console.error('Erro ao adicionar artigo:', error);
+                alert('Erro ao adicionar artigo: ' + error.message);
+                
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        }
+
+        // Atualizar artigo
+        async function updateArticle() {
+            const articleId = document.getElementById('edit-article-id').value;
+            const title = document.getElementById('edit-title-input').value.trim();
+            const category = document.getElementById('edit-category-select').value;
+            const sintoma = document.getElementById('edit-sintoma-input').value.trim();
+            const editorContent = document.getElementById('edit-editor-content');
+            const steps = editorContent ? editorContent.innerHTML : '';
+            const tagsInput = document.getElementById('edit-tags-input').value.trim();
+            
+            if (!title || !category || !sintoma || !steps) {
+                alert('Preencha todos os campos obrigatórios!');
+                return;
+            }
+            
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = steps;
+            if (!tempDiv.textContent.trim()) {
+                alert('O conteúdo não pode estar vazio!');
+                return;
+            }
+            
+            const tags = tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag);
+            
+            const submitButton = document.querySelector('#edit-form button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            submitButton.disabled = true;
+            
+            try {
+                const response = await fetch(`/api/knowledge/${articleId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        category,
+                        sintoma,
+                        steps,
+                        tags
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Erro ao atualizar artigo');
+                }
+                
+                const updatedArticle = await response.json();
+                
+                // Atualizar a base de conhecimento local
+                const articleIndex = knowledgeBase.findIndex(a => a.id === parseInt(articleId));
+                if (articleIndex !== -1) {
+                    knowledgeBase[articleIndex] = updatedArticle;
+                }
+                
+                alert('Artigo atualizado com sucesso!');
+                loadArticlePage(articleId);
+                
+            } catch (error) {
+                console.error('Erro ao atualizar artigo:', error);
+                alert('Erro ao atualizar artigo: ' + error.message);
+                
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        }
+
+        // Deletar artigo
+        async function deleteArticle(articleId) {
+            try {
+                const response = await fetch(`/api/knowledge/${articleId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Erro ao deletar artigo');
+                }
+                
+                // Remover da base de conhecimento local
+                knowledgeBase = knowledgeBase.filter(article => article.id !== parseInt(articleId));
+                
+                alert('Artigo excluído com sucesso!');
+                loadHomePage();
+                
+            } catch (error) {
+                console.error('Erro ao deletar artigo:', error);
+                alert('Erro ao deletar artigo: ' + error.message);
+            }
+        }
+
+        // Gerar gráfico de categorias
+        function generateCategoryChart(categories) {
+            const categoryChart = document.getElementById('category-chart');
+            
+            if (Object.keys(categories).length === 0) {
+                categoryChart.innerHTML = '<p style="color: #777; text-align: center;">Nenhuma categoria com artigos</p>';
+                return;
+            }
+            
+            const totalArticles = Object.values(categories).reduce((a, b) => a + b, 0);
+            
+            let chartHTML = '';
+            Object.keys(categories).forEach(category => {
+                const count = categories[category];
+                const percentage = totalArticles > 0 ? (count / totalArticles) * 100 : 0;
+                
+                chartHTML += `
+                    <div style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>${escapeHtml(category)}</span>
+                            <span>${count} artigo(s) - ${percentage.toFixed(1)}%</span>
+                        </div>
+                        <div style="width: 100%; height: 20px; background-color: #e0e0e0; border-radius: 10px; overflow: hidden;">
+                            <div style="width: ${percentage}%; height: 100%; background-color: #033c6b; border-radius: 10px; transition: width 0.5s;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            categoryChart.innerHTML = chartHTML;
+        }
+
+        // Gerar artigos mais visualizados
+        function generateTopArticles(topArticles) {
+            const topArticlesContainer = document.getElementById('top-articles');
+            
+            if (topArticles.length === 0) {
+                topArticlesContainer.innerHTML = '<p style="color: #777; text-align: center;">Nenhum artigo disponível</p>';
+                return;
+            }
+            
+            let articlesHTML = '';
+            topArticles.forEach((article, index) => {
+                articlesHTML += `
+                    <div style="padding: 15px; background-color: #f8fafd; border-radius: 5px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: bold; color: #033c6b;">${index + 1}. ${escapeHtml(article.title)}</div>
+                            <div style="font-size: 14px; color: #777;">${escapeHtml(article.category)} • ${article.views} visualizações</div>
+                        </div>
+                        <a href="#" data-id="${article.id}" class="card-link top-article-link">Ver →</a>
+                    </div>
+                `;
+            });
+            
+            topArticlesContainer.innerHTML = articlesHTML;
+            
+            // Adicionar event listeners para os links
+            topArticlesContainer.querySelectorAll('.top-article-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const articleId = parseInt(this.getAttribute('data-id'));
+                    if (articleId) {
+                        loadArticlePage(articleId);
+                    }
+                });
+            });
+        }
+
+        // Função para escapar HTML (segurança)
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Mostrar mensagem de erro
+        function showError(message) {
+            const mainContent = document.getElementById('main-content');
+            if (mainContent) {
+                mainContent.innerHTML = `
+                    <div class="error-message">
+                        <p>${escapeHtml(message)}</p>
+                        <button onclick="location.reload()" class="btn-primary" style="margin-top: 10px;">
+                            <i class="fas fa-redo"></i> Tentar Novamente
+                        </button>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+app.get('/api/oids/:ip', (req, res) => {
+    const { ip } = req.params;
+    
+    
+    readOids(ip, (lista) => {
+        if (!lista || lista.length === 0) {
+            return res.status(404).json({ error: "Nenhum OID encontrado ou impressora offline" });
+        }
+        res.json(lista);
+    });
+});
+
+// A função readOids deve estar fora da rota
+function readOids(ip, callback) {
+    const session = snmp.createSession(ip, "public", { 
+      timeout: 3000, 
+      retries: 1 });
+    const resultados = [];
+
+    session.walk("1.3.6.1.2.1.43", 20, (varbinds) => {
+        for (const vb of varbinds) {
+            if (!snmp.isVarbindError(vb)) {
+                resultados.push({
+                    oid: vb.oid.toString(),
+                    value: vb.value ? String(vb.value) : "N/A"
+                });
+            }
+        }
+    }, (err) => {
+        session.close();
+        if (err) console.error("Erro no SNMP:", err.message);
+        callback(resultados);
+    });
+}

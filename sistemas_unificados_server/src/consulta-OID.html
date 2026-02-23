@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta de OID</title>
+  <link rel="shortcut icon" href="src/logo_gov.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --background: hsl(210, 25%, 97%);
+      --foreground: hsl(220, 25%, 10%);
+      --card: hsl(0, 0%, 100%);
+      --primary: hsl(190, 70%, 42%);
+      --primary-foreground: hsl(0, 0%, 100%);
+      --muted-foreground: hsl(220, 10%, 45%);
+      --border: hsl(210, 20%, 88%);
+      --header-bg: hsl(220, 25%, 12%);
+      --header-bg-end: hsl(220, 30%, 18%);
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    header {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+        margin: 0;
+        flex-grow: 1;
+    }
+
+    /* Main */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 28rem;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Card */
+    .card {
+      background-color: var(--card);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      box-shadow: 
+        0 4px 20px -4px rgba(180, 190, 200, 0.4),
+        0 8px 40px -8px rgba(180, 190, 200, 0.2);
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--foreground);
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      background-color: var(--background);
+      color: var(--foreground);
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    input[type="text"]::placeholder {
+      color: var(--muted-foreground);
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary);
+      box-shadow: 
+        0 0 0 3px hsla(190, 70%, 42%, 0.15),
+        0 2px 8px hsla(210, 30%, 80%, 0.3);
+    }
+
+    /* Button */
+    .btn {
+      width: 100%;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      font-family: inherit;
+      color: var(--primary-foreground);
+      background-color: var(--primary);
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 14px -2px hsla(190, 70%, 42%, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      box-shadow: 0 6px 20px -2px hsla(190, 70%, 42%, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:focus {
+      outline: none;
+      box-shadow: 
+        0 0 0 2px var(--background),
+        0 0 0 4px var(--primary);
+    }
+
+    /* Icon */
+    .icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    /* Footer text */
+    .footer-text {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin-top: 1.5rem;
+    }
+
+    
+        header .logo-left {
+            width: 140px;
+        }
+         header .logo-right {
+            width: 100px;
+        }
+        
+
+        
+         .dropdown {
+              
+            position: relative;
+            display: inline-block;
+            padding-right: 100px;
+        }
+
+        .dropdown-btn {
+            white-space: nowrap;
+            text-overflow: ellipsis; 
+            background-color: transparent;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 25px;
+        }
+
+         .dropdown-btn i {
+            
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+
+        .title-menu{
+          font-size: 18px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f4f4f4;
+            width: 135px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4);
+            z-index: 1;
+            border-radius: 6px;
+           left: 0;
+            top: 90%;
+
+        }
+
+        .dropdown-content a {
+            color: #000;
+            font-size: 1.0rem;
+            font-family: 'Manrope', serif;
+            font-weight: 550;
+            border-radius: 6px;
+            padding: 15px 10px;
+            text-decoration: none;
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #0D57A1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+    /* Responsive */
+    @media (min-width: 768px) {
+      header h1 {
+        font-size: 1.875rem;
+      }
+    }
+  </style>
+
+<style>
+	@font-face {
+		font-family: 'CameraPlainVariable';
+		src: url('https://cdn.gpteng.co/mcp-widgets/v1/fonts/CameraPlainVariable.woff2') format('woff2');
+		font-weight: 100 900;
+		font-style: normal;
+		font-display: swap;
+	}
+
+	#lovable-badge {
+		--badge-bg: #1b1b1b;
+		--badge-text: #c5c1b9;
+		--badge-text-hover: #dcdad5;
+		--badge-radius: 6px;
+		--badge-padding: 8px;
+		--badge-gap: 6px;
+		--badge-shadow: 
+			0 0 0 1px rgba(0, 0, 0, 0.88),
+			0 1px 0 0 rgba(0, 0, 0, 0.04),
+			0 2px 2px -1px rgba(0, 0, 0, 0.08),
+			0 4px 4px -2px rgba(0, 0, 0, 0.08),
+			0 8px 8px -4px rgba(0, 0, 0, 0.08),
+			0 16px 16px -8px rgba(0, 0, 0, 0.08);
+		--badge-transition-duration: 0.2s;
+		--badge-transition-easing: cubic-bezier(0.16, 1, 0.32, 1);
+		--focus-color: #575ECF;
+		--focus-offset: 2px;
+		--focus-width: 2px;
+		
+		position: fixed;
+		bottom: 12px;
+		right: 12px;
+		height: 24px;
+		display: flex;
+		align-items: center;
+		z-index: 1000000;
+		background-color: var(--badge-bg);
+		color: var(--badge-text);
+		border-radius: var(--badge-radius);
+		box-shadow: var(--badge-shadow);
+		font-size: 12px;
+		font-family: CameraPlainVariable, "CameraPlainVariable Fallback", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		font-weight: 400 !important;
+		text-transform: none !important;
+		font-feature-settings: normal !important;
+		transform: translateZ(0);
+		will-change: transform, opacity;
+	}
+
+	#lovable-badge-cta {
+		display: flex;
+		align-items: center;
+		gap: var(--badge-gap);
+		padding: 0 var(--badge-padding);
+		height: 100%;
+		color: inherit;
+		text-decoration: none;
+		white-space: nowrap;
+		border-radius: var(--badge-radius) 0 0 var(--badge-radius);
+		transition: 
+			background-color var(--badge-transition-duration) ease,
+			color var(--badge-transition-duration) ease,
+			transform 0.1s ease;
+	}
+
+	#lovable-badge-cta:hover {
+		background: rgba(255, 255, 255, 0.04);
+		color: var(--badge-text-hover);
+	}
+
+	#lovable-badge-cta:active {
+		transform: scale(0.98);
+	}
+
+	#lovable-badge-cta:focus {
+		outline: none;
+	}
+
+	#lovable-badge-cta:focus-visible {
+		outline: var(--focus-width) solid var(--focus-color);
+		outline-offset: var(--focus-offset);
+		z-index: 1;
+	}
+
+	#lovable-badge-text {
+		line-height: 1;
+	}
+
+	#lovable-badge-divider {
+		width: 1px;
+		height: 24px;
+		background-color: rgba(255, 255, 255, 0.04);
+		flex-shrink: 0;
+	}
+
+	#lovable-badge-close {
+		width: 24px;
+		height: 24px;
+		min-width: 24px;
+		min-height: 24px;
+		cursor: pointer;
+		background: none;
+		border: none;
+		padding: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 0 var(--badge-radius) var(--badge-radius) 0;
+		flex-shrink: 0;
+		transition: 
+			background-color var(--badge-transition-duration) ease,
+			transform 0.1s ease;
+	}
+
+	#lovable-badge-close:hover {
+		background: rgba(255, 255, 255, 0.04);
+	}
+
+	#lovable-badge-close:active {
+		transform: scale(0.92);
+	}
+
+	#lovable-badge-close:focus {
+		outline: none;
+	}
+
+	#lovable-badge-close:focus-visible {
+		outline: var(--focus-width) solid var(--focus-color);
+		outline-offset: calc(var(--focus-offset) * -1);
+		z-index: 1;
+	}
+
+	#lovable-badge-close svg path {
+		fill: var(--badge-text);
+		transition: fill var(--badge-transition-duration) ease;
+	}
+
+	#lovable-badge-close:hover svg path {
+		fill: var(--badge-text-hover);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		#lovable-badge-cta,
+		#lovable-badge-close,
+		#lovable-badge-close svg path {
+			transition: none;
+		}
+		
+		#lovable-badge-cta:active,
+		#lovable-badge-close:active {
+			transform: none;
+		}
+	}
+
+	@media (prefers-contrast: high) {
+		#lovable-badge {
+			--badge-bg: #000;
+			--badge-text: #fff;
+			--badge-text-hover: #fff;
+			border: 2px solid currentColor;
+		}
+		
+		#lovable-badge-cta:focus-visible,
+		#lovable-badge-close:focus-visible {
+			outline-width: 3px;
+		}
+	}
+</style>
+<meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c934e03b-c756-4d56-8d62-cc4c59554684/id-preview-42116651--86370b3f-1ac8-48dc-b024-81fb3760c40c.lovable.app-1770141967999.png" /></head>
+<body>
+  <!-- Header -->
+  <header>
+     <a href="/dashboard"><img src="/src/LOGO_GOV.png" alt="Logo Governo" class="logo-left"></a>
+    <h1>Consulta de OID</h1>
+    <nav class="dropdown">
+            <button class="dropdown-btn">
+                <span class="title-menu">
+                    Menu <i class="fas fa-chevron-down"></i>
+                </span>
+            </button>
+            <div class="dropdown-content">
+                <a href="/config" target="_blank"
+                   >Configurações</a>
+                <a href="/cadastro-impressoras" target="_blank"
+                    >Cadastrar Impressoras</a>
+                     <a href="/oid" target="_blank"
+                    >Configurar Oids</a>
+
+            </div>
+        </nav>
+        <img src="/src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+      <div class="card">
+        <div class="form-group">
+          <label for="printer-ip">IP da impressora</label>
+          <input 
+            type="text" 
+            id="printer-ip" 
+            placeholder="Ex: 192.168.1.100"
+          >
+        </div>
+
+        <button class="btn" type="button">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          Consultar lista
+        </button>
+      </div>
+
+      <p class="footer-text">
+        Digite o endereço IP para consultar os OIDs disponíveis
+      </p>
+    </div>
+  </main>
+
+  <script>
+  document.querySelector('.btn').addEventListener('click', function () {
+    const ipInput = document.getElementById('printer-ip');
+    const ip = ipInput.value.trim();
+    const btn = document.querySelector('.btn');
+    const container = document.querySelector('.container');
+
+    const existingResults = document.getElementById('results-card');
+    if (existingResults) existingResults.remove();
+
+    if (!ip) {
+      alert('Por favor, digite um IP válido.');
+      return;
+    }
+
+    const originalBtnText = btn.innerHTML;
+    btn.innerHTML = 'Consultando...';
+    btn.disabled = true;
+
+ fetch('/api/oids/' + ip)
+    .then(function (response) {
+       
+        if (!response.ok) {
+            throw new Error('Servidor respondeu com erro ' + response.status);
+        }
+        return response.json();
+    })
+    .then(function (data) {
+        console.log("Dados recebidos:", data);
+        renderResults(data);
+    })
+    .catch(function (err) {
+        console.error("Erro na requisição:", err);
+        alert('Erro ao consultar: ' + err.message + '\n\nCertifique-se que o servidor está rodando e a rota /api/oids/:ip existe.');
+    })
+    .finally(function () {
+        btn.innerHTML = originalBtnText;
+        btn.disabled = false;
+    });
+      
+
+   function renderResults(results) {
+    const card = document.createElement('div');
+    card.id = 'results-card';
+    card.className = 'card';
+    card.style.marginTop = '1.5rem';
+    card.style.maxWidth = '100%'; // Garante que caiba na tela
+
+    let html = `
+        <h3 style="margin-bottom: 1rem;">OIDs Detectados (${results.length} encontrados)</h3>
+        <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+            <table style="width:100%; border-collapse: collapse; font-size: 0.8rem;">
+                <thead style="position: sticky; top: 0; background: var(--card); box-shadow: 0 1px 0 var(--border);">
+                    <tr>
+                        <th style="padding: 10px; text-align: left;">OID</th>
+                        <th style="padding: 10px; text-align: left;">Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    results.forEach(function (item) {
+        html += `
+            <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 8px; font-family: monospace; color: var(--primary);">${item.oid}</td>
+                <td style="padding: 8px; word-break: break-all;">${item.value}</td>
+            </tr>
+        `;
+    });
+
+    html += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    card.innerHTML = html;
+    const container = document.querySelector('.container');
+    container.appendChild(card);
+}
+  });
+</script>
+
+</body>
+</html>

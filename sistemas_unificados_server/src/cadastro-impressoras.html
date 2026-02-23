@@ -11,7 +11,6 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
-            
             background-repeat: no-repeat;
             background-position: left;
             background-size: 35%;
@@ -49,7 +48,23 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             overflow-x: auto; 
+           
         }
+
+         #cadastro {
+            text-align: right;
+        }
+
+        .cadastro-especial {
+            cursor: pointer;
+            color: #033d6dd7;
+            font-weight: bold;
+        }
+
+        .cadastro-especial:hover {
+            text-decoration: underline;
+        }
+
 
         .form-group {
             margin-bottom: 15px;
@@ -137,7 +152,7 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(63, 62, 62, 0.801);
         }
 
         .modal-content {
@@ -177,25 +192,139 @@
             left: 0;
             margin: 0.1px 0.5px;
         }
+        
         #nome, #editNome {
-    text-transform: uppercase;
-}
+            text-transform: uppercase;
+        }
+        
+       
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .success {
+            background-color: #4CAF50;
+        }
+        
+        .error {
+            background-color: #f44336;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        
+         .dropdown {
+              
+            position: relative;
+            display: inline-block;
+            padding-right: 100px;
+        }
+
+        .dropdown-btn {
+            white-space: nowrap;
+            text-overflow: ellipsis; 
+            background-color: transparent;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 25px;
+        }
+
+         .dropdown-btn i {
+            
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f4f4f4;
+            width: 135px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4);
+            z-index: 1;
+            border-radius: 6px;
+           left: 0;
+            top: 90%;
+
+        }
+
+        .dropdown-content a {
+            color: #000;
+            font-size: 1.0rem;
+            font-family: 'Manrope', serif;
+            font-weight: 550;
+            border-radius: 6px;
+            padding: 15px 10px;
+            text-decoration: none;
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #0D57A1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <header>
-    <a href="http://10.46.2.3:3000/dashboard"><img src="/src/LOGO_GOV.png" alt="Logo Governo" class="logo-left"></a>
-    <h1>Cadastro de Impressoras - SEPROR</h1>
-    <img src="src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
-</header>
+        <a href="/dashboard"><img src="/src/LOGO_GOV.png" alt="Logo Governo" class="logo-left"></a>
+        <h1>Cadastro de Impressoras - SEPROR</h1>
+        <nav class="dropdown">
+            <button class="dropdown-btn">
+                <span class="title-menu">
+                    Menu <i class="fas fa-chevron-down"></i>
+                </span>
+            </button>
+            <div class="dropdown-content">
+                <a href="/config" target="_blank"
+                   >Configurações</a>
+                <a href="/cadastro-impressoras" target="_blank"
+                    >Cadastrar Impressoras</a>
+                     <a href="/oid" target="_blank"
+                    >Configurar Oids</a>
+
+            </div>
+        </nav>
+        <img src="/src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
+    </header>
 
     <div class="container">
+        <div id="cadastro" class="cadastro-especial">Cadastrar Especial</div>
         <h2>Cadastrar Nova Impressora</h2>
         <form id="impressoraForm">
             <div class="form-group">
                 <label for="nome">Nome da Impressora:</label>
                 <input type="text" id="nome" name="nome" required>
             </div>
+            
             <div class="form-group">
                 <label for="ip">Endereço IP:</label>
                 <input type="text" id="ip" name="ip" required placeholder="Ex: 10.46.6.0">
@@ -208,6 +337,7 @@
         </form>
 
         <h2>Impressoras Cadastradas</h2>
+        <div id="loadingMessage">Carregando impressoras...</div>
         <table id="impressorasTable">
             <thead>
                 <tr>
@@ -247,9 +377,22 @@
         </div>
     </div>
 
+    <div id="especialModal" class="modal">
+    <div class="modal-content">
+        <span class="close-especial">&times;</span>
+        <h2>Cadastrar Especial</h2>
+
+        <!-- Conteúdo em branco por enquanto -->
+        <p style="text-align:center; color:#666;">
+            Conteúdo em desenvolvimento
+        </p>
+    </div>
+</div>
+
+
     <footer>
         <img src="src/LINHA.PNG" alt="Linha divisória" class="divider">
-        <p>&copy; 2025 - Secretária de Estado de Produção Rural - SEPROR. Desenvolvido por Renato Pedrozo (GILOG)</p>
+        <p>&copy; 2025 - Secretária de Estado de Produção Rural - SEPROR. Desenvolvido por Renato Pedrozo (GILOG) em colaboração com Ingrid Gabrielly</p>
     </footer>
 
     <script>
@@ -262,18 +405,51 @@
         let impressoras = [];
         let editModal = document.getElementById('editModal');
         let closeBtn = document.querySelector('.close');
+        let loadingMessage = document.getElementById('loadingMessage');
+        let printersTable = document.getElementById('impressorasTable');
+
+        // Mostrar notificação
+        function showNotification(message, type) {
+            // Remover notificações anteriores
+            const oldNotifications = document.querySelectorAll('.notification');
+            oldNotifications.forEach(notification => notification.remove());
+            
+            // Criar nova notificação
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Mostrar e depois esconder
+            setTimeout(() => {
+                notification.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 3000);
+        }
 
         // Função para carregar as impressoras
         async function loadImpressoras() {
             try {
-                const response = await fetch('http://10.46.2.3:3000/impressoras');
+                loadingMessage.style.display = 'block';
+                printersTable.style.display = 'none';
+                
+                const response = await fetch('/impressoras');
                 if (!response.ok) throw new Error('Erro ao carregar impressoras');
                 
                 impressoras = await response.json();
                 renderImpressoras();
-            } catch (error) {
                 
-                alert('Erro ao carregar impressoras. ' + error.message);
+                loadingMessage.style.display = 'none';
+                printersTable.style.display = 'table';
+            } catch (error) {
+                loadingMessage.textContent = 'Erro ao carregar impressoras. ' + error.message;
+                console.error('Erro ao carregar impressoras:', error);
             }
         }
 
@@ -281,6 +457,15 @@
         function renderImpressoras() {
             const tbody = document.querySelector('#impressorasTable tbody');
             tbody.innerHTML = '';
+
+            if (impressoras.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="4" style="text-align: center;">Nenhuma impressora cadastrada</td>
+                `;
+                tbody.appendChild(row);
+                return;
+            }
 
             impressoras.forEach(impressora => {
                 const row = document.createElement('tr');
@@ -313,9 +498,22 @@
             const nome = document.getElementById('nome').value.toUpperCase();
             const ip = document.getElementById('ip').value;
             const colorida = document.getElementById('colorida').checked;
+            
+            // Validação básica do IP
+            const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+            if (!ipPattern.test(ip)) {
+                showNotification('Por favor, insira um endereço IP válido.', 'error');
+                return;
+            }
 
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+            
             try {
-                const response = await fetch('http://10.46.2.3:3000/impressoras', {
+                submitBtn.innerHTML = '<div class="loading"></div> Salvando...';
+                submitBtn.disabled = true;
+
+                const response = await fetch('/impressoras', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -334,10 +532,13 @@
                 
                 // Limpa o formulário
                 document.getElementById('impressoraForm').reset();
-                alert('Impressora cadastrada com sucesso!');
+                showNotification('Impressora cadastrada com sucesso!', 'success');
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao cadastrar impressora: ' + error.message);
+                showNotification('Erro ao cadastrar impressora: ' + error.message, 'error');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
             }
         }
 
@@ -369,9 +570,22 @@
             const nome = document.getElementById('editNome').value.toUpperCase();
             const ip = document.getElementById('editIp').value;
             const colorida = document.getElementById('editColorida').checked;
+            
+            // Validação básica do IP
+            const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+            if (!ipPattern.test(ip)) {
+                showNotification('Por favor, insira um endereço IP válido.', 'error');
+                return;
+            }
 
+            const submitBtn = document.querySelector('#editForm button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
             try {
-                const response = await fetch(`http://10.46.2.3:3000/impressoras/${id}`, {
+                submitBtn.innerHTML = '<div class="loading"></div> Salvando...';
+                submitBtn.disabled = true;
+
+                const response = await fetch(`/impressoras/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -394,23 +608,35 @@
                 
                 renderImpressoras();
                 closeModal();
-                alert('Impressora atualizada com sucesso!');
+                showNotification('Impressora atualizada com sucesso!', 'success');
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao atualizar impressora: ' + error.message);
+                showNotification('Erro ao atualizar impressora: ' + error.message, 'error');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
             }
         }
 
-        // Função para excluir impressora - VERSÃO CORRIGIDA
+        // Função para excluir impressora
         async function deleteImpressora(event) {
             const id = parseInt(event.target.getAttribute('data-id'));
+            const impressora = impressoras.find(i => i.id === id);
             
-            if (!confirm('Tem certeza que deseja excluir esta impressora?')) {
+            if (!impressora) return;
+            
+            if (!confirm(`Tem certeza que deseja excluir a impressora "${impressora.nome}" (${impressora.ip})?`)) {
                 return;
             }
 
+            const deleteBtn = event.target;
+            const originalText = deleteBtn.textContent;
+            
             try {
-                const response = await fetch(`http://10.46.2.3:3000/impressoras/${id}`, {
+                deleteBtn.innerHTML = '<div class="loading"></div>';
+                deleteBtn.disabled = true;
+
+                const response = await fetch(`/impressoras/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Accept': 'application/json',
@@ -423,7 +649,7 @@
                     // Se for 404, remove localmente mesmo assim
                     impressoras = impressoras.filter(i => i.id !== id);
                     renderImpressoras();
-                    alert('Impressora não encontrada no servidor, mas foi removida localmente.');
+                    showNotification('Impressora não encontrada no servidor, mas foi removida localmente.', 'error');
                     return;
                 }
                 
@@ -438,16 +664,21 @@
                 // Tenta mostrar mensagem de sucesso do servidor ou padrão
                 try {
                     const data = await response.json();
-                    alert(data.message || 'Impressora excluída com sucesso!');
+                    showNotification(data.message || 'Impressora excluída com sucesso!', 'success');
                 } catch {
-                    alert('Impressora excluída com sucesso!');
+                    showNotification('Impressora excluída com sucesso!', 'success');
                 }
                 
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao excluir impressora: ' + error.message);
+                showNotification('Erro ao excluir impressora: ' + error.message, 'error');
+            } finally {
+                deleteBtn.textContent = originalText;
+                deleteBtn.disabled = false;
             }
         }
+
+        
 
         // Event Listeners
         document.getElementById('impressoraForm').addEventListener('submit', cadastrarImpressora);
@@ -461,6 +692,27 @@
 
         // Carrega as impressoras ao iniciar
         document.addEventListener('DOMContentLoaded', loadImpressoras);
+
+        // Modal Cadastro Especial
+const cadastroEspecialBtn = document.getElementById('cadastro');
+const especialModal = document.getElementById('especialModal');
+const closeEspecialBtn = document.querySelector('.close-especial');
+
+cadastroEspecialBtn.addEventListener('click', () => {
+    especialModal.style.display = 'block';
+});
+
+closeEspecialBtn.addEventListener('click', () => {
+    especialModal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === especialModal) {
+        especialModal.style.display = 'none';
+    }
+});
+
     </script>
+    
 </body>
 </html>

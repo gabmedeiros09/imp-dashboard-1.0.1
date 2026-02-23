@@ -1,5 +1,11 @@
 {
+  "scripts": {
+    "dev": "nodemon sistemas_unificados_server/src/server.js"
+  },
   "dependencies": {
     "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }

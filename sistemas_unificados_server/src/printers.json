@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "nome": "GABINETE",
+    "ip": "10.46.6.1",
+    "colorida": false
+  },
+  {
+    "id": 2,
+    "nome": "GABINETE _COLOR",
+    "ip": "10.46.6.2",
+    "colorida": true
+  },
+  {
+    "id": 3,
+    "nome": "SEC. EXECUTIVA",
+    "ip": "10.46.6.3",
+    "colorida": false
+  },
+  {
+    "id": 4,
+    "nome": "SEC.EXEC_COLOR",
+    "ip": "10.46.6.4",
+    "colorida": true
+  },
+  {
+    "id": 5,
+    "nome": "DAF",
+    "ip": "10.46.6.5",
+    "colorida": false
+  },
+  {
+    "id": 6,
+    "nome": "ASSJUR",
+    "ip": "10.46.6.6",
+    "colorida": false
+  },
+  {
+    "id": 7,
+    "nome": "CORREDOR_DAF",
+    "ip": "10.46.6.7",
+    "colorida": false
+  },
+  {
+    "id": 8,
+    "nome": "CORREDOR_RH",
+    "ip": "10.46.6.8",
+    "colorida": false
+  },
+  {
+    "id": 9,
+    "nome": "CORREDOR_GAB",
+    "ip": "10.46.6.9",
+    "colorida": false
+  },
+  {
+    "id": 10,
+    "nome": "PROTOCOLO",
+    "ip": "10.46.6.10",
+    "colorida": false
+  },
+  {
+    "id": 11,
+    "nome": "SGTI",
+    "ip": "10.46.6.11",
+    "colorida": false
+  },
+  {
+    "id": 12,
+    "nome": "DESPERDICIO",
+    "ip": "10.46.6.12",
+    "colorida": false
+  },
+  {
+    "id": 13,
+    "nome": "UCI",
+    "ip": "10.46.6.13",
+    "colorida": false
+  },
+  {
+    "id": 14,
+    "nome": "GABINETE SEPA",
+    "ip": "10.46.6.15",
+    "colorida": false
+  }
+]

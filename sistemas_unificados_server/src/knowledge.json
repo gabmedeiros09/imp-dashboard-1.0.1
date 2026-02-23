@@ -1,0 +1,18 @@
+{
+  "articles": [
+    {
+      "id": 2,
+      "title": "SUBIR PASTAS DE SETORES",
+      "category": "it",
+      "categoryName": "TI e Infraestrutura",
+      "sintoma": "Usuário não consegue visualizar as pastas compartilhadas do setor na rede.",
+      "steps": "<h3>Passos para Resolver:</h3><ol><li>Verifique se o cabo de internet está conectado e funcionando.</li><li>Saia do usuário e faça o login novamente. Verifique se as pastas subiram, se sim, finalize o processo.</li><li>Abra o cmd e execute os seguintes comandos:</li></ol><div><blockquote>ipconfig /release</blockquote><blockquote>ipconfig /flushdns</blockquote><blockquote>ipconfig /renew</blockquote><blockquote>gpupdate /force</blockquote></div>",
+      "tags": [
+        "rede",
+        "pastas"
+      ],
+      "date": "28/01/2026",
+      "views": 40
+    }
+  ]
+}

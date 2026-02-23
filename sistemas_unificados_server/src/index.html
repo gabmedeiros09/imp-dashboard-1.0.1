@@ -43,6 +43,69 @@
             width: 100px;
         }
 
+        .dropdown {
+              
+            position: relative;
+            display: inline-block;
+            padding-right: 100px;
+        }
+
+        .dropdown-btn {
+            white-space: nowrap;
+            text-overflow: ellipsis; 
+            background-color: transparent;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 25px;
+        }
+
+        .title-menu {
+            font-family: 'Manrope', serif;
+            font-size: 1.4em;
+        }
+
+        .dropdown-btn i {
+            
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f4f4f4;
+            width: 135px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4);
+            z-index: 1;
+            border-radius: 6px;
+           left: 0;
+            top: 90%;
+
+        }
+
+        .dropdown-content a {
+            color: #000;
+            font-size: 1.0rem;
+            font-family: 'Manrope', serif;
+            font-weight: 550;
+            border-radius: 6px;
+            padding: 15px 10px;
+            text-decoration: none;
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #0D57A1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -545,11 +608,23 @@
     <header>
         <img src="/src/LOGO_GOV.png" alt="Logo Governo" class="logo-left">
         <h1>Gerenciador de Impressoras (SEPROR)</h1>
-        <div>
-            <a href="/config.html" target="_blank" style="color: white; margin-right: 20px; text-decoration: none;">Configurações</a>
-            <a href="/cadastro-impressoras.html" target="_blank" style="color: white; margin-right: 20px; text-decoration: none;">Cadastrar Impressoras</a>
-            <img src="src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
-        </div>
+        <nav class="dropdown">
+            <button class="dropdown-btn">
+                <span class="title-menu">
+                    Menu <i class="fas fa-chevron-down"></i>
+                </span>
+            </button>
+            <div class="dropdown-content">
+                <a href="/config" target="_blank"
+                   >Configurações</a>
+                <a href="/cadastro-impressoras" target="_blank"
+                    >Cadastrar Impressoras</a>
+                     <a href="/oid" target="_blank"
+                    >Configurar Oids</a>
+
+            </div>
+        </nav>
+        <img src="src/LOGO_SEPROR.png" alt="Logo SEPROR" class="logo-right">
     </header>
 
     <div class="container">
@@ -558,7 +633,7 @@
    
     <footer>
         <img src="src/LINHA.PNG" alt="Linha divisória" class="divider">
-        <p>&copy; 2025 - Secretária de Estado de Produção Rural - SEPROR. Desenvolvido por Renato Pedrozo (GILOG) em colaboração com ...</p>
+        <p>&copy; 2025 - Secretária de Estado de Produção Rural - SEPROR. Desenvolvido por Renato Pedrozo (GILOG) em colaboração com Ingrid Gabrielly</p>
     </footer>
 
     <!-- Modal -->
@@ -603,6 +678,112 @@
 
         const COLOR_PRINTERS = ["10.46.6.2", "10.46.6.4"];
         let impressoras = [];
+
+        // Variável para controlar se o bip já foi tocado para evitar repetição
+let paperJamBeepPlayed = false;
+
+/**
+ * Função para tocar bip quando há obstrução de papel
+ */
+function playPaperJamBeep() {
+    try {
+        // Criar contexto de áudio
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        // Configurar o oscilador para um tom de alerta
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // Frequência em Hz
+        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+        
+        // Configurar ganho (volume)
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        // Conectar os nós
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // Tocar o som
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.5);
+        
+        console.log('🔊 Bip de obstrução de papel tocado');
+        paperJamBeepPlayed = true;
+        
+    } catch (error) {
+        console.error('Erro ao tocar bip:', error);
+        // Fallback: usar API de áudio mais simples
+        fallbackBeep();
+    }
+}
+
+/**
+ * Fallback para navegadores mais antigos
+ */
+function fallbackBeep() {
+    try {
+        // Tentar usar o elemento de áudio
+        const beepSound = new Audio("data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xA4Tvh9Rz/y8QADBwMWgQAZG/ILNAARQ4GLTcDeIIIhxGOBAuD7hOfBB3/94gcJ3w+o5/5eIAIAAAVwWgQAVQ2ORaIQwEMAJiDg95G4nQL7mQVWI6GwRcfsZAcsKkJvxgxEjzFUgfHoSQ9Qq7KNwqHwuB13MA4a1q/DmBrHgPcmjiGoh//EwC5nGPEmS4RcfkVKOhJf+WOgoxJclFz3kgn//dBA+ya1GhurNn8zb//9NNutNuhz31f////9vt///z+IdAEAAAK4LQIAKobHItEIYCGAExBwe8jcToF9zIKrEdDYIuP2MgOWFSE34wYiR5iqQPj0JIeoVdlG4VD4XA67mAcNa1fhzA1jwHuTRxDUQ//iYBczjHiTJcIuPyKlHQkv/LHQUYkuSi57yQT//uggfZNajQ3Vmz+Zt//+mm3Wm3Q576v////+32///5/EOgAAADAAAGAAAPeEMAADAb/4gAAIACQhgIYCDADAIYODCD/4uAACCBMAgDgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAOAgwA4CDADgIMAAA=");
+        beepSound.volume = 0.3;
+        beepSound.play().catch(e => console.log('Áudio bloqueado pelo navegador:', e));
+    } catch (error) {
+        console.error('Fallback beep também falhou:', error);
+    }
+}
+
+/**
+ * Verificar e tocar bip para obstrução de papel
+ */
+function checkAndPlayPaperJamBeep(status, ip) {
+    const buttonElement = document.getElementById(`button-${ip}`);
+    
+    if (status && status.includes('Obstrução de papel')) {
+        // Adicionar classe visual
+        buttonElement.classList.add('paper-jam');
+        
+        if (!paperJamBeepPlayed) {
+            console.log(`🚨 Obstução de papel detectada na impressora ${ip}`);
+            playPaperJamBeep();
+            showPaperJamNotification(ip);
+        }
+    } else {
+        // Remover classe visual e resetar flag
+        buttonElement.classList.remove('paper-jam');
+        paperJamBeepPlayed = false;
+    }
+}
+
+/**
+ * Mostrar notificação visual de obstrução de papel
+ */
+function showPaperJamNotification(ip) {
+    // Verificar se o navegador suporta notificações
+    if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+            new Notification("🚨 Obstução de Papel Detectada", {
+                body: `A impressora ${ip} está com obstrução de papel`,
+                icon: "/src/logo_gov.ico",
+                tag: "paper-jam-alert"
+            });
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification("🚨 Obstução de Papel Detectada", {
+                        body: `A impressora ${ip} está com obstrução de papel`,
+                        icon: "/src/logo_gov.ico",
+                        tag: "paper-jam-alert"
+                    });
+                }
+            });
+        }
+    }
+    
+    // Também mostrar alerta no console
+    console.warn(`⚠️ ALERTA: Obstução de papel na impressora ${ip}`);
+}
 
         /**
          * Carrega as configurações do servidor
@@ -751,16 +932,23 @@
          * Atualiza a interface do usuário para uma impressora online
          */
         function updatePrinterUI(ip, data, impressora) {
-            const buttonElement = document.getElementById(`button-${ip}`);
-            const statusElement = document.getElementById(`printer-status-${ip}`);
+    const buttonElement = document.getElementById(`button-${ip}`);
+    const statusElement = document.getElementById(`printer-status-${ip}`);
 
-            buttonElement.classList.remove('offline');
-            updatePrinterStatus(ip, data.status || 'Desconhecido');
+    buttonElement.classList.remove('offline');
 
-            if (statusElement) {
-                statusElement.textContent = data.status || 'Desconhecido';
-                statusElement.style.color = getStatusColor(data.status);
-            }
+        // ✅ ADICIONAR: Armazenar último status
+    buttonElement.dataset.lastStatus = data.status || 'Desconhecido';
+    
+    // ✅ ADICIONAR ESTA LINHA - Verificar e tocar bip para obstrução de papel
+    checkAndPlayPaperJamBeep(data.status, ip);
+    
+    updatePrinterStatus(ip, data.status || 'Desconhecido');
+
+    if (statusElement) {
+        statusElement.textContent = data.status || 'Desconhecido';
+        statusElement.style.color = getStatusColor(data.status);
+    }
 
             if (impressora.colorida) {
                 updateColorTonerLevels(ip, data.toner || [0, 0, 0, 0]);
